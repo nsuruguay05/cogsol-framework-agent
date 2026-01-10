@@ -1,0 +1,82 @@
+---
+sidebar_position: 25
+---
+
+### MCPServer Model
+
+Represents a Model Context Protocol (MCP) server configuration with connection details and status information.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier for the MCP server. Automatically assigned by the system.
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Name of the MCP server. Minimum 1 character.
+
+---
+
+#### `description` *(string, Optional)*  
+Description of the MCP server. This field is nullable.
+
+---
+
+#### `url` *(string, URI)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Server URL for connection. Maximum 200 characters, minimum 1 character.
+
+---
+
+#### `headers` *(object, Optional)*  
+HTTP headers for server connection. This field is nullable.
+
+---
+
+#### `protocol_version` *(string, Optional)*  
+MCP protocol version. Maximum 20 characters, minimum 1 character.
+
+---
+
+#### `client_name` *(string, Optional)*  
+Name of the client connecting to the server. Maximum 100 characters, minimum 1 character.
+
+---
+
+#### `client_version` *(string, Optional)*  
+Version of the client. Maximum 20 characters, minimum 1 character.
+
+---
+
+#### `active` *(boolean, Optional)*  
+Whether this server is currently active.
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the server was created. Automatically set by the system.
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp when the server was last updated. Automatically maintained by the system.
+
+---
+
+#### Example
+
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "url": "string",
+  "headers": {},
+  "protocol_version": "string",
+  "client_name": "string",
+  "client_version": "string",
+  "active": true,
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z"
+}
+```

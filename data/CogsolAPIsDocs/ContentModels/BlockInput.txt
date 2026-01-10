@@ -1,0 +1,65 @@
+---
+sidebar_position: 1
+---
+
+### BlockInput Model
+
+Defines the structure of a block input, representing a unit of content within a document with associated metadata and positioning information.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the block. Automatically assigned by the system.
+
+---
+
+#### `metadata` *(object, Optional)*  
+Metadata object containing additional information about the block. Can be null or an empty object.
+
+---
+
+#### `text` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+The main text content of the block. Minimum length: 1 character.
+
+---
+
+#### `document_index` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Index position of this block within the document. Used to maintain order and structure.  
+Range: -2,147,483,648 to 2,147,483,647.
+
+---
+
+#### `page_num` *(integer, Nullable)*  
+Page number where this block appears in the original document. Can be null if page information is not available.  
+Range: -2,147,483,648 to 2,147,483,647.
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the block was created. Automatically set by the system.
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp of the last block update. Automatically updated by the system.
+
+---
+
+#### `initial_block_text` *(string, Optional)*  
+The original text content of the block before any modifications or processing. Used to track changes and maintain history.
+
+---
+
+#### Example
+```json
+{
+  "id": 0,
+  "metadata": {},
+  "text": "string",
+  "document_index": 2147483647,
+  "page_num": 2147483647,
+  "created_at": "2025-07-01T21:07:46.029Z",
+  "updated_at": "2025-07-01T21:07:46.029Z",
+  "initial_block_text": "string"
+}
+```

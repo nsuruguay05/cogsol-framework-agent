@@ -1,0 +1,2296 @@
+---
+sidebar_position: 2
+slug: /api-reference/content
+---
+
+# Content
+
+## Blocks
+
+### Get block by ID
+
+**GET** `/blocks/{id}/`  
+Retrieves a block object by its unique identifier.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying the block.
+
+---
+
+#### Returns  
+A [BlockInput](./Content-models/BlockInput.md) model.
+
+---
+
+#### Status Code
+
+`200 OK`: Block retrieved successfully.
+
+---
+
+### Update block by ID
+
+**PUT** `/blocks/{id}/`  
+Updates an existing block by its ID. Requires all fields in the body.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying the block.
+
+---
+
+#### Request body  
+A JSON object matching the [BlockInput](./Content-models/BlockInput.md) model:
+
+---
+
+#### Request example  
+```json
+{
+  "metadata": {},
+  "text": "string",
+  "document_index": 2147483647,
+  "page_num": 2147483647,
+  "initial_block_text": "string"
+}
+```
+
+---
+
+#### Returns  
+A [BlockInput](./Content-models/BlockInput.md) object with updated values.
+
+---
+
+#### Status Code
+
+`200 OK`: Block updated successfully.
+
+---
+
+### Partially update block by ID
+
+**PATCH** `/blocks/{id}/`  
+Partially updates an existing block. Only the provided fields will be updated.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying the block.
+
+---
+
+#### Request body  
+A partial JSON object matching the [BlockInput](./Content-models/BlockInput.md) model:
+
+---
+
+#### Request example  
+```json
+{
+  "metadata": {},
+  "text": "string",
+  "document_index": 2147483647,
+  "page_num": 2147483647,
+  "initial_block_text": "string"
+}
+```
+
+---
+
+#### Returns  
+A [BlockInput](./Content-models/BlockInput.md) object with updated values.
+
+---
+
+#### Status Code
+
+`200 OK`: Block partially updated successfully.
+
+---
+
+### Delete block by ID
+
+**DELETE** `/blocks/{id}/`  
+Deletes a block by its ID.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying the block.
+
+---
+
+#### Status Code
+
+`204 No Content`: Block successfully deleted.
+
+---
+
+## Documents
+
+### List all documents
+
+**GET** `/documents/`  
+Retrieves a paginated list of all uploaded documents.
+
+---
+
+#### Query parameters *(optional)*  
+`page` *(integer)*:  
+  Page number of the results.
+
+`page_size` *(integer)*:  
+  Number of items to return per page.
+
+---
+
+#### Returns  
+An array of [Documents](./Content-models/Documents.md) objects. Each object includes document metadata, processing status, and associated node information.
+
+---
+
+#### Status Code
+
+`200 OK`: List of documents returned successfully.
+
+---
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "metadata": "string",
+    "node_id": [
+      "string"
+    ],
+    "name": "string",
+    "doc_type": "Video",
+    "processing_status": "CREATED",
+    "processing_error_details": "string",
+    "created_at": "2025-07-01T19:02:23.221Z",
+    "updated_at": "2025-07-01T19:02:23.221Z",
+    "initial_block_text": "string",
+    "node": 0
+  }
+]
+```
+
+---
+
+### Upload a document
+
+**POST** `/documents/`  
+Uploads a document with optional metadata and associates it to a node. The processing configuration can be set in three ways:
+
+- **Manual Configuration**: Provide individual processing parameters
+- **Ingestion Config**: Use predefined settings via `ingestion_config_id`
+- **Hybrid**: Combine an Ingestion Config with custom parameter overrides
+
+:::info Configuration Priority
+When using an `ingestion_config_id`, the explicitly provided parameters in the request take precedence over the Ingestion Config settings.
+:::
+
+---
+
+#### Request body *(formData)*
+
+##### Document Source *(One required)*
+You must provide exactly one of the following document sources:
+
+`file` *(file, Optional)*  
+Document file to upload. Supported formats include: PDF, DOCX, TXT, Markdown, LaTeX, and various media files.
+
+`url` *(string, Optional)*  
+URL to fetch the document from. The system will download and process the content.
+
+`texts` *(string, Optional)*  
+Raw text content to be processed as a document.
+
+---
+
+##### Information and Configuration
+
+`name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Name of the document. For file uploads, this should match the original filename including the extension (e.g., "document.pdf").
+
+`doc_type` *(string, Optional)*  
+Type of the document. The system can automatically detect the type based on the file format.  
+**Default:** `Text Document`  
+**Enum values:** 
+- `Video` - Video files and multimedia content
+- `Latex Slideshow` - LaTeX presentation files  
+- `PDF Slideshow` - PDF presentation documents
+- `Latex Document` - LaTeX document files
+- `Text Document` - Plain text and general documents
+- `Webpage` - Web page content and HTML files
+- `Transcription` - Audio/video transcription content
+- `Markdown` - Markdown formatted documents 
+
+`metadata` *(string, Optional)*  
+Additional metadata in JSON array format. Each metadata entry can include configuration options:
+```json
+[
+  {"key": "author", "value": "John Doe", "metadata_config": "3"},
+  {"key": "category", "value": "research"}
+]
+```
+
+`description` *(string, Optional)*  
+Human-readable description of the document content and purpose. This description will be included in every text block/chunk generated from the document during processing.
+
+
+`ingestion_config_id` *(integer, Optional)*  
+ID of the Ingestion Configuration to use for processing this document. When provided:
+- Applies predefined processing settings
+- Makes `node_id` optional if the config specifies a default node
+- Individual parameters in the request can still override the config settings
+
+`node_id` *(integer)*   
+ID of the node to associate the document with.  
+***Required unless using an Ingestion Config that specifies a default node.**
+
+
+`chunk_overlap` *(integer, Optional)*  
+Number of overlapping characters between text chunks.  
+**Default:** `0`
+
+`max_size_block` *(integer, Optional)*  
+Maximum size of each text chunk in characters.  
+**Default:** `1500`
+
+`separators` *(string, Optional)*  
+Custom text separators for chunking logic. Use specific delimiters to control how text is split.
+
+`additional_prompt_instructions` *(string, Optional)*  
+Additional instructions for AI processing of the document content.
+
+
+
+`pdf_parsing_mode` *(string, Optional)*  
+PDF parsing strategy to use.  
+**Default:** `both`  
+**Enum values:** `manual`, `OpenAI`, `both`
+
+`ocr` *(boolean, Optional)*  
+Enable Optical Character Recognition for image-based content.  
+**Default:** `false`
+
+`images_uuid` *(string, Optional)*  
+UUID for associated images when processing documents with visual content.
+
+
+`preview` *(boolean, Optional)*  
+Return a preview of the processed content without full processing.  
+**Default:** `false`
+
+`assign_paths_as_metadata` *(boolean, Optional)*  
+Automatically assign file paths as metadata for organizational purposes.  
+**Default:** `false`
+
+---
+
+#### Returns  
+A [Document](./Content-models/Documents.md) object containing the uploaded document information.
+
+---
+
+#### Status Code
+
+`200 OK`: Document uploaded (with preview).
+
+`201 Created`: Document successfully created.
+
+`400 Bad Request`: Invalid input.
+
+`404 Not Found`: Node not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "metadata": [
+    {
+      "key": "autor",
+      "values": [
+          "Juan"
+      ],
+      "metadata_config": 1
+    }
+  ],
+  "node_id": 0,
+  "name": "string",
+  "doc_type": "Video",
+  "processing_status": "CREATED",
+  "processing_error_details": "string",
+  "editable": true,
+  "created_at": "2025-07-01T20:46:04.207Z",
+  "updated_at": "2025-07-01T20:46:04.207Z",
+  "initial_block_text": "string",
+  "node": 0
+}
+```
+
+---
+
+### Get all document types
+
+**GET** `/documents/doc_types/`  
+Retrieves a list of all supported document types.
+
+---
+
+#### Returns  
+An array of available document types (as strings).
+
+---
+
+#### Status Code
+
+`200 OK`: List of document types returned successfully.
+
+---
+
+### Get document by ID
+
+**GET** `/documents/{id}/`  
+Retrieves the details of a specific document by its ID.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The unique identifier of the document.
+
+---
+
+#### Returns  
+A [Document](./Content-models/Documents.md) object with the document details.
+
+---
+
+#### Status Code
+
+`200 OK`: Document retrieved successfully.
+
+`404 Not Found`: No document with the given ID exists.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "metadata": "string",
+  "node_id": [
+    "string"
+  ],
+  "name": "string",
+  "doc_type": "Video",
+  "processing_status": "CREATED",
+  "processing_error_details": "string",
+  "created_at": "2025-07-01T19:06:58.483Z",
+  "updated_at": "2025-07-01T19:06:58.483Z",
+  "initial_block_text": "string",
+  "node": 0
+}
+```
+
+---
+
+### Update document by ID
+
+**PUT** `/documents/{id}/`  
+Updates a document with optional metadata to a node. Requires the full set of fields.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The unique identifier of the document.
+
+---
+
+#### Request body *(formData)*  
+`file` *(file, Optional)*:  
+  The new document file to upload.
+
+`url` *(string, Optional)*:  
+  URL to fetch the document content from.
+
+`texts` *(string, Optional)*:  
+  Raw text content.
+
+`name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+  The name of the document.
+
+`doc_type` *(string, Optional)*:  
+  Document type. Default: `Text Document`.
+
+`metadata` *(string, Optional)*:  
+  Metadata as string (usually JSON).
+
+`description` *(string, Optional)*:  
+  Document description.
+
+`chunk_overlap` *(integer, Optional)*:  
+  Default: 0
+
+`preview` *(boolean, Optional)*:  
+  Default: false
+
+`max_size_block` *(integer, Optional)*:  
+  Default: 1500
+
+`separators` *(string, Optional)*:  
+  Text separators for chunking.
+
+`additional_prompt_instructions` *(string, Optional)*:  
+  Additional processing instructions.
+
+`assign_paths_as_metadata` *(boolean, Optional)*:  
+  Default: false
+
+`pdf_parsing_mode` *(string, Optional)*:  
+  Default: `both`. Possible values: `manual`, `OpenAI`, `both`
+
+`images_uuid` *(string, Optional)*:  
+  UUID for associated images.
+
+`ocr` *(boolean, Optional)*:  
+  Default: false
+
+`nodes_ids` *(string, Optional)*:  
+  Node IDs to associate with the document.
+
+---
+
+#### Returns  
+A [Documents](./Content-models/Documents.md) object with updated information.
+
+---
+
+#### Status Code
+
+`200 OK`: Document updated successfully.
+
+`400 Bad Request`: The request is invalid.
+
+`404 Not Found`: No document with the given ID exists.
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "metadata": "string",
+  "node_id": [
+    "string"
+  ],
+  "name": "string",
+  "doc_type": "Video",
+  "processing_status": "CREATED",
+  "processing_error_details": "string",
+  "created_at": "2025-07-01T19:06:58.483Z",
+  "updated_at": "2025-07-01T19:06:58.483Z",
+  "initial_block_text": "string",
+  "node": 0
+}
+```
+---
+
+### Delete document by ID
+
+**DELETE** `/documents/{id}/`  
+Deletes an existing document by its ID.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The unique identifier of the document to delete.
+
+---
+
+#### Status Code
+
+`204 No Content`: Document successfully deleted.
+
+`404 Not Found`: Document with the given ID does not exist.
+
+---
+
+### Create a block for a document
+
+**POST** `/documents/{id}/blocks/`  
+Creates a new block associated with the specified document.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The ID of the document to which the block will be added.
+
+---
+
+#### Request body  
+A JSON object matching the [BlockInput](./Content-models/BlockInput.md) model:
+
+---
+
+#### Returns  
+A [BlockInput](./Content-models/BlockInput.md) object containing the created block.
+
+---
+
+#### Status Code
+
+`201 Created`: Block successfully created.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "metadata": {},
+  "text": "string",
+  "document_index": 2147483647,
+  "page_num": 2147483647,
+  "created_at": "2025-07-01T19:15:09.268Z",
+  "updated_at": "2025-07-01T19:15:09.268Z",
+  "initial_block_text": "string"
+}
+```
+
+---
+
+### Delete blocks from a document
+
+**DELETE** `/documents/{id}/blocks/`  
+Deletes multiple blocks from a specific document.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The ID of the document from which blocks will be deleted.
+
+---
+
+#### Request body  
+A JSON object matching the [BlocksIds](./Content-models/BlocksIds.md) model:
+
+---
+
+#### Status Code
+
+`200 OK`: Blocks successfully deleted.
+
+`400 Bad Request`: Invalid input.
+
+`404 Not Found`: Document with given ID not found.
+
+---
+
+### Get metadata for a document
+
+**GET** `/documents/{id}/metadata/`  
+Retrieves all metadata associated with a specific document.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The unique identifier of the document.
+
+---
+
+#### Returns  
+A [Metadata](./Content-models/Metadata.md) object containing a list of metadata items.
+
+---
+
+#### Status Code
+
+`200 OK`: Metadata successfully retrieved.
+
+`404 Not Found`: Document not found.
+
+---
+
+#### Response example  
+```json
+{
+  "metadata": [
+    {
+      "key": "string",
+      "values": [
+        "string"
+      ],
+      "metadata_config": 0
+    }
+  ]
+}
+```
+
+---
+
+### Add metadata to a document
+
+**POST** `/documents/{id}/metadata/`  
+Adds one or more metadata entries to the specified document.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The unique identifier of the document.
+
+---
+
+#### Request body  
+A JSON object matching the [Metadata](./Content-models/Metadata.md) model.
+
+---
+
+#### Status Code
+
+`201 Created`: Metadata successfully added.
+
+`400 Bad Request`: Invalid metadata structure.
+
+`404 Not Found`: Document with given ID not found.
+
+---
+
+### Replace document metadata
+
+**PATCH** `/documents/{id}/metadata/`  
+Replaces all the metadata of the document with the received JSON.
+
+Deletes the metadata that is not in the received JSON.  
+Creates the new metadata that is not in the received JSON.  
+Updates the metadata that is in the received JSON.
+
+The metadata config is optional. If it is not provided, the default metadata (None) config is used.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The ID of the document whose metadata is to be updated.
+
+---
+
+#### Request body  
+A JSON object matching the [Metadata](./Content-models/Metadata.md) model.
+
+---
+
+#### Status Code
+
+`200 OK`: Metadata successfully updated.
+
+`400 Bad Request`: Invalid input data.
+
+`404 Not Found`: Document not found.
+
+---
+
+### Rename a document
+
+**PATCH** `/documents/{id}/rename/`  
+Updates the name of a specific document.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying this document.
+
+---
+
+#### Request body  
+A [Document](./Content-models/Documents.md) object with the new data.
+
+---
+
+#### Returns  
+A [Documents](./Content-models/Documents.md) object containing updated information.
+
+---
+
+#### Status Code
+
+`200 OK`: Document successfully renamed.
+
+`400 Bad Request`: Invalid input data.
+
+`404 Not Found`: Document not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "metadata": "string",
+  "node_id": [
+    "string"
+  ],
+  "name": "string",
+  "doc_type": "Video",
+  "processing_status": "CREATED",
+  "processing_error_details": "string",
+  "created_at": "2025-07-01T19:21:39.448Z",
+  "updated_at": "2025-07-01T19:21:39.448Z",
+  "initial_block_text": "string",
+  "node": 0
+}
+```
+
+---
+
+## Metadata_configs
+
+### Get all metadata configs
+
+**GET** `/metadata_configs/`  
+Retrieves a list of all metadata configurations available.
+
+---
+
+#### Returns  
+An array of [MetadataConfig](./Content-models/MetadataConfig.md) objects.
+
+---
+
+#### Status Code
+
+`200 OK`: List of metadata configurations returned successfully.
+
+---
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "name": "author",
+    "type": "STRING",
+    "possible_values": [
+      "John",
+      "Bob",
+      "Steve"
+    ],
+    "default_value": "John",
+    "format": "string",
+    "filtrable": true,
+    "required": true,
+    "in_embedding": false,
+    "in_retrieval": true,
+    "root_node_id": 1
+  }
+]
+```
+
+---
+
+### Get a specific metadata config by ID
+
+**GET** `/metadata_configs/{metadata_config_id}/`  
+Retrieves a specific metadata configuration by its ID.
+
+---
+
+#### Path parameters 
+- `metadata_config_id` *(string)* — **Required**  
+  ID of the metadata config to retrieve.
+
+---
+
+#### Returns  
+A [MetadataConfig](./Content-models/MetadataConfig.md) object.
+
+---
+
+#### Status Code
+
+`200 OK`: Metadata configuration retrieved successfully.
+
+`404 Not Found`: Metadata configuration not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "author",
+  "type": "STRING",
+  "possible_values": [
+    "John",
+    "Bob",
+    "Steve"
+  ],
+  "default_value": "John",
+  "format": "string",
+  "filtrable": true,
+  "required": true,
+  "in_embedding": false,
+  "in_retrieval": true,
+  "root_node_id": 1
+}
+```
+
+---
+
+### Partially update a metadata configuration fields
+
+**PATCH** `/metadata_configs/{metadata_config_id}/`  
+Updates a metadata configuration fields.
+
+---
+
+#### Path parameters  
+- `metadata_config_id` *(string)* — **Required**  
+  The unique identifier of the metadata configuration.
+---
+
+#### Request body  
+A JSON object matching the [MetadataConfigValues](./Content-models/MetadataConfigValues.md) model:
+
+##### Example
+```json
+{
+  "in_retrieval": false
+}
+```
+
+---
+
+#### Returns  
+An object containing the updated list of possible [MetadataConfigValues](./Content-models/MetadataConfigValues.md) for the metadata configuration.
+
+---
+
+#### Status Code
+
+`200 OK`: List of values updated successfully.
+
+`400 Bad Request`: Invalid request data, e.g., missing or malformed values.
+
+`404 Not Found`: The specified metadata configuration ID does not exist.
+
+---
+
+#### Response example  
+```json
+{
+  "name": "author",
+  "possible_values": [
+    "John",
+    "Bob",
+    "Steve"
+  ],
+  "default_value": "John",
+  "format": null,
+  "filtrable": true,
+  "required": true,
+  "in_embedding": false,
+  "in_retrieval": false
+}
+```
+---
+
+### Get a list of metadata configurations
+
+**GET** `/metadata_configs/{metadata_config_id}/values/`  
+Get all possible values for a metadata config.
+
+---
+
+#### Path parameters 
+- `metadata_config_id` *(string)* — **Required**  
+  ID of the metadata config to retrieve.
+---
+
+#### Returns  
+A [MetadataConfig](./Content-models/MetadataConfig.md) object.
+
+---
+
+#### Status Code
+
+`200 OK`: List of possible values
+
+`404 Not Found`: Not Found
+
+---
+
+#### Response example  
+```json
+{
+  "values": [
+    "John",
+    "Bob",
+    "Steve"
+  ]
+}
+```
+
+---
+
+
+### Add new values to a metadata config
+
+**PATCH** `/metadata_configs/{metadata_config_id}/values/`  
+Adds one or more values to the list of possible values in a specific metadata configuration.
+
+---
+
+#### Path parameters  
+- `metadata_config_id` *(string)* — **Required**  
+  The unique identifier of the metadata configuration to which new values should be added.
+
+---
+
+#### Request body  
+A JSON object matching the [MetadataConfigValues](./Content-models/MetadataConfigValues.md) model:
+
+##### Example  
+```json
+{
+  "values": [
+    "Mark"
+  ]
+}
+```
+
+---
+
+#### Returns  
+An object containing the updated list of possible values for the metadata configuration.
+
+---
+
+#### Status Code
+
+`200 OK`: List of values updated successfully.
+
+`400 Bad Request`: Invalid request data, e.g., missing or malformed values.
+
+`404 Not Found`: The specified metadata configuration ID does not exist.
+
+---
+
+#### Response example  
+```json
+{
+  "values": [
+    "John",
+    "Bob",
+    "Steve",
+    "Mark"
+  ]
+}
+```
+
+---
+
+### Delete a value from a metadata config
+
+**DELETE** `/metadata_configs/{metadata_config_id}/values/`  
+Deletes a specific value from the list of possible values in a metadata configuration.
+
+---
+
+#### Path parameters  
+- `metadata_config_id` *(string)* — **Required**  
+  The ID of the metadata config to modify.
+
+---
+
+#### Request body  
+A JSON object containing the value to be removed:
+
+---
+
+#### Request example  
+```json
+{
+  "value": "Bob"
+}
+```
+
+---
+
+#### Status Code
+
+`204 No content`
+
+`400 Bad Request`: Invalid request data, e.g., missing or malformed values.
+
+`404 Not Found`: The specified metadata configuration ID does not exist.
+
+---
+
+## Nodes
+
+### Retrieve all nodes
+
+**GET** `/nodes/`  
+Retrieves a paginated list of all nodes with optional filters.
+
+---
+
+#### Query parameters *(optional)*  
+`page` *(integer)*:  
+  A page number within the paginated result set.
+
+`page_size` *(integer)*:  
+  Number of results to return per page.
+
+`node_type` *(string)*:  
+  Filter nodes by node type.
+
+`name` *(string)*:  
+  Filter nodes by name.
+
+---
+
+#### Returns  
+A paginated list of [Nodes](./Content-models/Nodes.md) objects.
+
+---
+
+#### Status Code
+
+`200 OK`: List of nodes successfully retrieved.
+
+---
+
+#### Response example  
+```json
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "delete_orphaned_metadata": false,
+      "name": "string",
+      "created_at": "2025-07-01T19:51:54.011Z",
+      "updated_at": "2025-07-01T19:51:54.011Z",
+      "initial_block_text": "string",
+      "node_type": "COMMON",
+      "parent": 0
+    }
+  ]
+}
+```
+
+---
+
+### Create a new node
+
+**POST** `/nodes/`  
+Creates a new node with the specified data.
+
+---
+
+#### Request body  
+A JSON object matching the [Nodes](./Content-models/Nodes.md) model.
+
+---
+
+#### Returns  
+A [Nodes](./Content-models/Nodes.md) object with the created node information.
+
+---
+
+#### Status Code
+
+`201 Created`: Node successfully created.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "delete_orphaned_metadata": false,
+  "name": "string",
+  "created_at": "2025-07-01T19:57:51.644Z",
+  "updated_at": "2025-07-01T19:57:51.644Z",
+  "initial_block_text": "string",
+  "node_type": "COMMON",
+  "parent": 0
+}
+```
+
+---
+
+### Retrieve a node by ID
+
+**GET** `/nodes/{id}/`  
+Retrieves detailed information about a specific node, including its related documents.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying the node.
+
+---
+
+#### Returns  
+A [Node](./Content-models/Node.md) object with detailed node information and associated documents.
+
+---
+
+#### Status Code
+
+`200 OK`: Node successfully retrieved.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "parent": 0,
+  "documents": [
+    {
+      "id": 0,
+      "metadata": "string",
+      "node_id": [
+        "string"
+      ],
+      "name": "string",
+      "doc_type": "Video",
+      "processing_status": "CREATED",
+      "processing_error_details": "string",
+      "created_at": "2025-07-01T19:59:48.912Z",
+      "updated_at": "2025-07-01T19:59:48.912Z",
+      "initial_block_text": "string",
+      "node": 0
+    }
+  ],
+  "initial_block_text": "string",
+  "node_type": "COMMON",
+  "created_at": "2025-07-01T19:59:48.912Z",
+  "updated_at": "2025-07-01T19:59:48.912Z"
+}
+```
+
+---
+
+### Update a node
+
+**PUT** `/nodes/{id}/`  
+Updates the information of an existing node.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying the node to update.
+
+---
+
+#### Request body  
+A JSON object matching the [Nodes](./Content-models/Nodes.md) model.
+
+---
+
+#### Returns  
+A [Nodes](./Content-models/Nodes.md) object with the updated node information.
+
+---
+
+#### Status Code
+
+`200 OK`: Node successfully updated.
+
+`400 Bad Request`: Invalid input data.
+
+`404 Not Found`: Node with the given ID does not exist.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "delete_orphaned_metadata": false,
+  "name": "string",
+  "created_at": "2025-07-01T20:04:18.239Z",
+  "updated_at": "2025-07-01T20:04:18.239Z",
+  "initial_block_text": "string",
+  "node_type": "COMMON",
+  "parent": 0
+}
+```
+
+---
+
+### Partially update a node
+
+**PATCH** `/nodes/{id}/`  
+Updates one or more fields of an existing node without replacing the entire object.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying the node to update.
+
+---
+
+#### Request body  
+A partial JSON object matching the [Nodes](./Content-models/Nodes.md) model.
+
+---
+
+#### Returns  
+A [Nodes](./Content-models/Nodes.md) object with the updated node information.
+
+---
+
+#### Status Code
+
+`200 OK`: Node successfully updated.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "delete_orphaned_metadata": false,
+  "name": "string",
+  "created_at": "2025-07-01T20:04:18.239Z",
+  "updated_at": "2025-07-01T20:04:18.239Z",
+  "initial_block_text": "string",
+  "node_type": "COMMON",
+  "parent": 0
+}
+```
+
+---
+
+### Delete a node
+
+**DELETE** `/nodes/{id}/`  
+Deletes an existing node by its ID.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying the node to delete.
+
+---
+
+#### Status Code
+
+`204 No Content`: Node successfully deleted.
+
+---
+
+### Get documents in a node
+
+**GET** `/nodes/{id}/documents/`  
+Retrieves a paginated list of documents contained in the specified node.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The unique identifier of the node.
+
+---
+
+#### Query parameters *(optional)*  
+`page` *(integer)*:  
+  Page number within the paginated result set.
+
+`page_size` *(integer)*:  
+  Number of results to return per page.
+
+---
+
+#### Returns  
+A paginated list of [DocumentBlocks](./Content-models/DocumentBlocks.md) objects.
+
+---
+
+#### Status Code
+
+`200 OK`: Documents successfully retrieved.
+
+---
+
+#### Response example  
+```json
+{
+  "count": 2,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "metadata": "string",
+      "blocks": "string",
+      "node_id": [
+        "string"
+      ],
+      "name": "string",
+      "doc_type": "Video",
+      "processing_status": "CREATED",
+      "processing_error_details": "string",
+      "created_at": "2025-07-01T20:11:11.188Z",
+      "updated_at": "2025-07-01T20:11:11.188Z",
+      "initial_block_text": "string",
+      "node": 0,
+      "embedding": 0
+    }
+  ]
+}
+```
+
+---
+
+### Move documents to another node
+
+**PUT** `/nodes/{id}/documents/`  
+Moves a list of documents from the current node to the specified destination node.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The ID of the current (source) node.
+
+---
+
+#### Request body  
+A JSON object matching the [MoveNodeDocuments](./Content-models/MoveNodeDocuments.md) model.
+
+---
+
+#### Status Code
+
+`200 OK`: Documents successfully moved.
+
+`404 Not Found`: Source node or destination node not found.
+
+---
+
+### Get metadata configs for a node
+
+**GET** `/nodes/{id}/metadata_configs/`  
+Retrieves metadata configurations for a specific node.
+
+---
+
+#### Path parameters  
+- `id` *(string)* — **Required**  
+  The unique identifier of the node.
+---
+
+#### Query parameters *(optional)*  
+`page` *(integer)*:  
+  A page number within the paginated result set.
+
+`page_size` *(integer)*:  
+  Number of results to return per page.
+
+---
+
+#### Returns  
+An array of [MetadataConfig](./Content-models/MetadataConfig.md) objects.
+
+---
+
+#### Status Code
+
+`200 OK`: Metadata configurations successfully retrieved.
+
+---
+
+#### Response example  
+```json
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "name": "author",
+      "type": "STRING",
+      "possible_values": [
+        "John",
+        "Steve",
+        "Mark"
+      ],
+      "default_value": "John",
+      "format": "string",
+      "filtrable": true,
+      "required": true,
+      "in_embedding": false,
+      "in_retrieval": false,
+      "root_node_id": 1
+    }
+  ]
+}
+```
+
+---
+
+### Create a metadata config for a node
+
+**POST** `/nodes/{id}/metadata_configs/`  
+Creates a new metadata configuration for a specific node and all its descendants.
+
+---
+
+#### Path parameters  
+
+- `id` *(string)* — **Required**  
+  The unique identifier of the node.
+
+---
+
+#### Request body  
+A JSON object matching the [MetadataConfig](./Content-models/MetadataConfig.md) model.
+
+---
+
+#### Returns  
+A [MetadataConfig](./Content-models/MetadataConfig.md) object containing the created configuration.
+
+---
+
+#### Status Code
+
+`201 Created`: Metadata configuration successfully created.
+
+`400 Bad Request`: Invalid input data.
+
+`404 Not Found`: Node with the given ID does not exist.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "type": "STRING",
+  "possible_values": [],
+  "default_value": "string",
+  "format": "string",
+  "filtrable": true,
+  "required": true,
+  "in_embedding": true,
+  "in_retrieval": true
+  "root_node_id": 0
+}
+```
+
+---
+
+### Remove metadata config from a node
+
+**DELETE** `/nodes/{id}/metadata_configs/{metadata_config_id}/`  
+Removes a metadata configuration from a node only if the node is its own root.
+This endpoint does not perform recursive deletion, metadata configurations on child nodes remain untouched.
+
+---
+
+#### Path parameters  
+- `id` *(string)* — **Required**  
+  The unique identifier of the node.
+  
+- `metadata_config_id` *(string)* — **Required**  
+  The unique identifier of the metadata configuration to remove.
+
+---
+
+#### Status Code
+
+`200 OK`: Metadata configuration successfully removed.
+
+`400 Bad Request`: Invalid request or metadata config cannot be removed.
+
+`404 Not Found`: Node or metadata configuration not found.
+
+---
+
+### Remove metadata config from a node recursively
+
+**DELETE** `/nodes/{id}/metadata_configs/{metadata_config_id}/recursive/`  
+Removes a metadata configuration from a node only if the node is its own root.
+Removes the metadata config from all child nodes as well.
+
+---
+
+#### Path parameters  
+- `id` *(string)* — **Required**  
+  The unique identifier of the node.
+  
+- `metadata_config_id` *(string)* — **Required**  
+  The unique identifier of the metadata configuration to remove.
+
+---
+
+#### Status Code
+
+`200 OK`: Metadata configuration successfully removed from node and all child nodes.
+
+`400 Bad Request`: Invalid request or metadata config cannot be removed.
+
+`404 Not Found`: Node or metadata configuration not found.
+
+---
+
+## Reference_formatters
+
+### List all reference formatters
+
+**GET** `/reference_formatters/`  
+Retrieves a paginated list of all reference formatters or creates a new one.
+
+---
+
+#### Query parameters *(optional)*  
+`page` *(integer)*:  
+  A page number within the paginated result set.
+
+`page_size` *(integer)*:  
+  Number of results to return per page.
+
+---
+
+#### Returns  
+A paginated list of [ReferenceFormatter](./Content-models/ReferenceFormatter.md) objects.
+
+---
+
+#### Status Code
+
+`200 OK`: Reference formatters successfully retrieved.
+
+---
+
+#### Response example  
+```json
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "expression": "string"
+    }
+  ]
+}
+```
+
+---
+
+### Create a reference formatter
+
+**POST** `/reference_formatters/`  
+Creates a new reference formatter with the specified configuration.
+
+---
+
+#### Request body  
+A JSON object matching the [ReferenceFormatter](./Content-models/ReferenceFormatter.md) model.
+
+---
+
+#### Returns  
+A [ReferenceFormatter](./Content-models/ReferenceFormatter.md) object containing the created formatter.
+
+---
+
+#### Status Code
+
+`201 Created`: Reference formatter successfully created.
+
+---
+
+### Get reference formatter by ID
+
+**GET** `/reference_formatters/{id}/`  
+Retrieves a reference formatter.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying this reference formatter.
+
+---
+
+#### Returns  
+A [ReferenceFormatter](./Content-models/ReferenceFormatter.md) object.
+
+---
+
+#### Status Code
+
+`200 OK`: Reference formatter successfully retrieved.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "expression": "string"
+}
+```
+
+---
+
+### Update a reference formatter
+
+**PUT** `/reference_formatters/{id}/`  
+Updates an existing reference formatter by replacing all its fields with the provided data.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying this reference formatter.
+
+---
+
+#### Request body  
+A JSON object matching the [ReferenceFormatter](./Content-models/ReferenceFormatter.md) model.
+
+---
+
+#### Returns  
+A [ReferenceFormatter](./Content-models/ReferenceFormatter.md) object.
+
+---
+
+#### Status Code
+
+`200 OK`: Reference formatter successfully updated.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "expression": "string"
+}
+```
+---
+
+### Partially update a reference formatter
+
+**PATCH** `/reference_formatters/{id}/`  
+Partially updates an existing reference formatter. Only the provided fields will be updated.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying this reference formatter.
+
+---
+
+#### Request body  
+A partial JSON object matching the [ReferenceFormatter](./Content-models/ReferenceFormatter.md) model.
+
+---
+
+#### Returns  
+A [ReferenceFormatter](./Content-models/ReferenceFormatter.md) object.
+
+---
+
+#### Status Code
+
+`200 OK`: Reference formatter successfully updated.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "expression": "string"
+}
+```
+---
+
+### Delete a reference formatter
+
+**DELETE** `/reference_formatters/{id}/`  
+Deletes an existing reference formatter by its ID.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying this reference formatter.
+
+---
+
+#### Status Code
+
+`204 No Content`: Reference formatter successfully deleted.
+
+---
+
+## Retrievals
+
+### List all retrievals
+
+**GET** `/retrievals/`  
+Retrieves a paginated list of all retrievals or creates a new one.
+
+---
+
+#### Query parameters *(optional)*  
+`page` *(integer)*:  
+  A page number within the paginated result set.
+
+`page_size` *(integer)*:  
+  Number of results to return per page.
+
+---
+
+#### Returns  
+A paginated list of [Retrieval](./Content-models/Retrieval.md) objects.
+
+---
+
+#### Status Code
+
+`200 OK`: Retrievals successfully retrieved.
+
+---
+
+#### Response example  
+```json
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "formatters": [
+        {
+          "id": 0,
+          "doc_type": "Video",
+          "formatter_id": 0
+        }
+      ],
+      "description": "string",
+      "num_refs": 10,
+      "created_at": "2025-07-01T20:37:16.601Z",
+      "updated_at": "2025-07-01T20:37:16.601Z",
+      "reordering": true,
+      "strategy_reordering": "string",
+      "retrieval_window": 2147483647,
+      "reordering_metadata": "string",
+      "fixed_blocks_reordering": 2147483647,
+      "previous_blocks": 0,
+      "next_blocks": 0,
+      "contingency_for_embedding": true,
+      "threshold_similarity": 1,
+      "max_msg_length": 570,
+      "retrieval_type": "SEARCH",
+      "node": 0
+    }
+  ]
+}
+```
+
+---
+
+### Create a retrieval
+
+**POST** `/retrievals/`  
+Creates a new retrieval configuration with the specified parameters.
+
+---
+
+#### Request body  
+A JSON object matching the [Retrieval](./Content-models/Retrieval.md) model.
+
+---
+
+#### Returns  
+A [Retrieval](./Content-models/Retrieval.md) object containing the created retrieval configuration.
+
+---
+
+#### Status Code
+
+`201 Created`: Retrieval successfully created.
+
+`400 Bad Request`: Invalid input data.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "formatters": [
+    {
+      "id": 0,
+      "doc_type": "Video",
+      "formatter_id": 0
+    }
+  ],
+  "description": "string",
+  "num_refs": 10,
+  "created_at": "2025-07-01T20:40:37.716Z",
+  "updated_at": "2025-07-01T20:40:37.716Z",
+  "reordering": true,
+  "strategy_reordering": "string",
+  "retrieval_window": 2147483647,
+  "reordering_metadata": "string",
+  "fixed_blocks_reordering": 2147483647,
+  "previous_blocks": 0,
+  "next_blocks": 0,
+  "contingency_for_embedding": true,
+  "threshold_similarity": 1,
+  "max_msg_length": 570,
+  "retrieval_type": "SEARCH",
+  "node": 0
+}
+```
+---
+
+### Get retrieval by ID
+
+**GET** `/retrievals/{id}/`  
+Retrieves, updates or deletes a retrieval.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying this retrieval.
+
+---
+
+#### Returns  
+A [Retrieval](./Content-models/Retrieval.md) object.
+
+---
+
+#### Status Code
+
+`200 OK`: Retrieval successfully retrieved.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "formatters": [
+    {
+      "id": 0,
+      "doc_type": "Video",
+      "formatter_id": 0
+    }
+  ],
+  "description": "string",
+  "num_refs": 10,
+  "created_at": "2025-07-01T20:41:05.514Z",
+  "updated_at": "2025-07-01T20:41:05.514Z",
+  "reordering": true,
+  "strategy_reordering": "string",
+  "retrieval_window": 2147483647,
+  "reordering_metadata": "string",
+  "fixed_blocks_reordering": 2147483647,
+  "previous_blocks": 0,
+  "next_blocks": 0,
+  "contingency_for_embedding": true,
+  "threshold_similarity": 1,
+  "max_msg_length": 570,
+  "retrieval_type": "SEARCH",
+  "node": 0
+}
+```
+
+---
+
+### Update a retrieval
+
+**PUT** `/retrievals/{id}/`  
+Updates an existing retrieval by replacing all its fields with the provided data.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying this retrieval.
+
+---
+
+#### Request body  
+A JSON object matching the [Retrieval](./Content-models/Retrieval.md) model.
+
+---
+
+#### Returns  
+A [Retrieval](./Content-models/Retrieval.md) object.
+
+---
+
+#### Status Code
+
+`200 OK`: Retrieval successfully updated.
+
+`400 Bad Request`: Invalid input data.
+
+`404 Not Found`: Retrieval with the given ID does not exist.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "formatters": [
+    {
+      "id": 0,
+      "doc_type": "Video",
+      "formatter_id": 0
+    }
+  ],
+  "description": "string",
+  "num_refs": 10,
+  "created_at": "2025-07-01T20:41:05.514Z",
+  "updated_at": "2025-07-01T20:41:05.514Z",
+  "reordering": true,
+  "strategy_reordering": "string",
+  "retrieval_window": 2147483647,
+  "reordering_metadata": "string",
+  "fixed_blocks_reordering": 2147483647,
+  "previous_blocks": 0,
+  "next_blocks": 0,
+  "contingency_for_embedding": true,
+  "threshold_similarity": 1,
+  "max_msg_length": 570,
+  "retrieval_type": "SEARCH",
+  "node": 0
+}
+```
+---
+
+### Partially update a retrieval
+
+**PATCH** `/retrievals/{id}/`  
+Partially updates an existing retrieval. Only the provided fields will be updated.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying this retrieval.
+
+---
+
+#### Request body  
+A partial JSON object matching the [Retrieval](./Content-models/Retrieval.md) model.
+
+---
+
+#### Returns  
+A [Retrieval](./Content-models/Retrieval.md) object.
+
+---
+
+#### Status Code
+
+`200 OK`: Retrieval successfully updated.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "formatters": [
+    {
+      "id": 0,
+      "doc_type": "Video",
+      "formatter_id": 0
+    }
+  ],
+  "description": "string",
+  "num_refs": 10,
+  "created_at": "2025-07-01T20:41:05.514Z",
+  "updated_at": "2025-07-01T20:41:05.514Z",
+  "reordering": true,
+  "strategy_reordering": "string",
+  "retrieval_window": 2147483647,
+  "reordering_metadata": "string",
+  "fixed_blocks_reordering": 2147483647,
+  "previous_blocks": 0,
+  "next_blocks": 0,
+  "contingency_for_embedding": true,
+  "threshold_similarity": 1,
+  "max_msg_length": 570,
+  "retrieval_type": "SEARCH",
+  "node": 0
+}
+```
+---
+
+### Delete a retrieval
+
+**DELETE** `/retrievals/{id}/`  
+Deletes an existing retrieval by its ID.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+A unique integer value identifying this retrieval.
+
+---
+
+#### Status Code
+
+`204 No Content`: Retrieval successfully deleted.
+
+---
+
+### Retrieve similar blocks
+
+**POST** `/retrievals/{retrieval}/retrieve/`  
+Retrieve similar blocks using the specified retrieval configuration.
+
+---
+
+#### Path parameters  
+`retrieval` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+:  
+The retrieval configuration identifier.
+
+---
+
+#### Request body  
+A JSON object matching the [RetrieveSimilarBlocks](./Content-models/RetrieveSimilarBlocks.md) model.
+
+---
+
+#### Returns  
+A [RetrieveSimilarBlocks](./Content-models/RetrieveSimilarBlocks.md) response object.
+
+---
+
+#### Status Code
+
+`201 Created`: Similar blocks successfully retrieved.
+
+---
+
+#### Response example  
+```json
+{
+  "question": "string",
+  "doc_type": "Video"
+}
+```
+
+## Upload_documents
+
+### Upload multiple documents
+
+**POST** `/upload_documents/`  
+Uploads multiple documents simultaneously with batch processing capabilities. This endpoint is ideal for bulk operations when you need to upload many documents at once. The processing configuration can be set in three ways:
+
+- **Manual Configuration**: Provide individual processing parameters that apply to all documents
+- **Ingestion Config**: Use predefined settings via `ingestion_config_id`
+- **Hybrid**: Combine an Ingestion Config with custom parameter overrides
+- **Per-document Metadata**: Use a metadata file to specify individual settings for each document
+
+:::info Bulk Upload Benefits
+- **Efficient processing**: All documents are processed in a single request
+- **Consistent configuration**: Apply the same settings to multiple documents
+- **Flexible metadata**: Individual document metadata can be specified via metadata file
+- **Batch status tracking**: Monitor the processing status of all documents together
+:::
+
+---
+
+#### Request body *(formData)*
+
+
+`files` *(file)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Multiple document files to upload. Supported formats include: PDF, DOCX, TXT, Markdown, LaTeX, and various media files.
+- Upload multiple files in a single request
+- Each file will be processed according to the specified configuration
+- File names will be used as document names
+
+
+
+`metadata_file` *(file, Optional)*  
+JSON/.xls/.xlsx/.ods file containing individual metadata and configuration for each document. This file allows you to specify different settings per document.
+
+
+
+`node_id` *(string)*
+Node ID where the documents will be uploaded.
+***Required unless using an Ingestion Config that specifies default nodes.**
+
+`ingestion_config_id` *(integer, Optional)*  
+ID of the Ingestion Configuration to use for processing all documents. When provided:
+- Applies predefined processing settings to all documents
+- Makes `node_id` optional if the config specifies default node
+- Individual document settings in metadata file can still override config settings
+
+
+
+`chunk_overlap` *(integer, Optional)*  
+Number of overlapping characters between text chunks for all documents.  
+**Default:** `0`
+
+`max_size_block` *(integer, Optional)*  
+Maximum size of each text chunk in characters for all documents.  
+**Default:** `1500`
+
+`separators` *(array of strings, Optional)*  
+Custom text separators for chunking logic applied to all documents. Use specific delimiters to control how text is split.
+
+`additional_prompt_instructions` *(string, Optional)*  
+Additional instructions for AI processing applied to all documents.
+
+
+
+`pdf_parsing_mode` *(string, Optional)*  
+PDF parsing strategy to use for all PDF documents.  
+**Default:** `both`  
+**Enum values:** `manual`, `OpenAI`, `both`
+
+`ocr` *(boolean, Optional)*  
+Enable Optical Character Recognition for image-based content in all documents.  
+**Default:** `false`
+
+
+
+`assign_paths_as_metadata` *(boolean, Optional)*  
+Automatically assign file paths as metadata for organizational purposes for all documents.  
+**Default:** `false`
+
+---
+
+#### Returns  
+For preview (200), returns an object containing a preview of the upload operation.  
+For successful creation (201), returns an array of [Documents](./Content-models/Documents.md) objects.
+
+---
+
+#### Status Code
+
+`200 OK`: Upload preview generated successfully.
+
+`201 Created`: Documents successfully uploaded and created.
+
+`400 Bad Request`: Invalid input data.
+
+`404 Not Found`: Node not found.
+
+---
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "metadata": [
+      {
+        "key": "autor",
+        "values": [
+            "Juan"
+        ],
+        "metadata_config": 1
+      }
+    ],
+    "node_id": 0,
+    "name": "string",
+    "doc_type": "Video",
+    "processing_status": "CREATED",
+    "processing_error_details": "string",
+    "editable": true,
+    "created_at": "2025-07-01T20:46:04.207Z",
+    "updated_at": "2025-07-01T20:46:04.207Z",
+    "initial_block_text": "string",
+    "node": 0
+  }
+]
+```
+
+---
+

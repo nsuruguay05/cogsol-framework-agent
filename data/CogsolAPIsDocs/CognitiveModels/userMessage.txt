@@ -1,0 +1,36 @@
+---
+sidebar_position: 24
+---
+
+### UserMessage Model
+Represents a message sent by the user, optionally accompanied by a file and additional metadata. This model is typically used for logging or processing user inputs.
+
+---
+
+#### `message` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+The content of the user's message.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `file` *(string, URI, ReadOnly, Nullable)*  
+A link to a file uploaded by the user.  
+
+---
+
+#### `metadata` *(object, Optional)*  
+Additional key-value metadata associated with the message.  
+
+---
+
+#### Example
+```json
+{
+  "message": "string",
+  "metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
+```

@@ -1,0 +1,88 @@
+---
+sidebar_position: 2
+---
+
+### Document Model
+
+Defines the structure of a document object, representing uploaded content with metadata, processing status, and node associations.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the document. Automatically assigned by the system.
+
+---
+
+#### `metadata` *(string, ReadOnly)*  
+Document metadata stored as a string, typically in JSON format. Contains additional information about the document.
+
+---
+
+#### `node_id` *(array, ReadOnly)*  
+Array of node identifiers that this document is associated with. Represents the organizational structure placement of the document.
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Name of the document. Minimum length: 1 character.
+
+---
+
+#### `doc_type` *(string, ReadOnly)*  
+Type of the document. Automatically determined by the system.  
+**Enum values:** `Text Document`, `Transcription`
+
+---
+
+#### `processing_status` *(string, ReadOnly)*  
+Current processing status of the document. Automatically updated by the system.  
+**Enum values:** `CREATED`, `PROCESSING`, `PROCESSED`, `ERROR`
+
+---
+
+#### `processing_error_details` *(string, ReadOnly, Nullable)*  
+Detailed error information if document processing failed. Can be null if no errors occurred.  
+Minimum length: 1 character when present.
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the document was created. Automatically set by the system.
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp of the last document update. Automatically updated by the system.
+
+---
+
+#### `initial_block_text` *(string, Optional)*  
+The initial text content or preview of the document. Used for quick reference and search purposes.
+
+---
+
+#### `node` *(integer, Nullable)*  
+Primary node identifier that this document belongs to. Can be null if not assigned to a specific node.
+
+---
+
+#### Example
+```json
+[
+  {
+    "id": 0,
+    "metadata": "string",
+    "node_id": [
+      "string"
+    ],
+    "name": "string",
+    "doc_type": "Video",
+    "processing_status": "CREATED",
+    "processing_error_details": "string",
+    "created_at": "2025-07-01T21:08:26.058Z",
+    "updated_at": "2025-07-01T21:08:26.058Z",
+    "initial_block_text": "string",
+    "node": 0
+  }
+]
+```

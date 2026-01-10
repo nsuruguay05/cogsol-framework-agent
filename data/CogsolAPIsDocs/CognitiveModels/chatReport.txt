@@ -1,0 +1,70 @@
+---
+sidebar_position: 5
+---
+
+### ChatReport Model
+
+Represents a report associated with a chat, providing classification details and metadata for review and resolution.
+
+---
+
+#### `id` *(integer, Read-only)*  
+Unique identifier for the chat report.  
+
+---
+#### `category` *(string)*  
+Categorization of the report based on its context.  
+- **Enum**: `CORRECT`, `INCORRECT`, `NO_INFO`  
+
+---
+#### `reason` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Specific reason for the report.
+
+**Enum**: `NOT_IN_DOCS`, `INCORRECT_RESPONSE`, `INCORRECT_NO_INFO`, `NOT_SURE`  
+
+---
+#### `severity` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+Severity level of the issue reported.  
+
+**Enum**: `INFO`, `LOW`, `MEDIUM`, `HIGH`  
+
+---
+#### `topic` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+Topic associated with the report.  
+- **Min length**: 1  
+- **Max length**: 255  
+
+---
+#### `comments` *(string, Nullable)*  
+Optional user comments elaborating on the report.  
+
+---
+#### `status` *(string)*  
+Current resolution status of the report.  
+**Enum**: `NO_ISSUES`, `OPEN`, `RESOLVED`, `IN_PROGRESS`  
+
+---
+#### `created_at` *(string, Read-only, date-time)*  
+Timestamp indicating when the report was created.  
+
+---
+#### `updated_at` *(string, Read-only, date-time)*  
+Timestamp indicating the last time the report was updated.  
+
+---
+#### `chat` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+ID of the associated chat conversation.  
+
+---
+#### Example
+```json
+{
+  "category": "CORRECT",
+  "reason": "NOT_IN_DOCS",
+  "severity": "INFO",
+  "topic": "string",
+  "comments": "string",
+  "status": "NO_ISSUES",
+  "chat": 0
+}
+```

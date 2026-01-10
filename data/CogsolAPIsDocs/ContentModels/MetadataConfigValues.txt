@@ -1,0 +1,26 @@
+---
+sidebar_position: 8
+---
+
+### MetadataConfigValues Model
+
+Defines the structure for adding new values to a metadata configuration's list of possible values.
+
+---
+
+#### `values` *(array)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Array of string values to be added to the metadata configuration.  
+**Minimum items:** 1  
+**Item type:** string  
+**Item constraint:** Minimum length: 1 character per value
+
+---
+
+#### Example
+```json
+{
+  "values": [
+    "string"
+  ]
+}
+```

@@ -1,0 +1,46 @@
+---
+sidebar_position: 13
+---
+
+### ReferenceFormatter Model
+
+Defines the structure of a reference formatter, used to format citations and references according to specific templates and expressions.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the reference formatter. Automatically assigned by the system.  
+**Title:** Id  
+**x-nullable:** true
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Name of the reference formatter.  
+**Title:** Name  
+**Minimum length:** 1 character
+
+---
+
+#### `description` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Description of the reference formatter, explaining its purpose and usage.  
+**Title:** Description  
+**Minimum length:** 1 character
+
+---
+
+#### `expression` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Expression template used by the reference formatter to format citations.  
+**Title:** Expression  
+**Minimum length:** 1 character
+
+---
+
+#### Example
+```json
+{
+  "name": "string",
+  "description": "string",
+  "expression": "string"
+}
+```

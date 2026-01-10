@@ -1,0 +1,24 @@
+---
+sidebar_position: 27
+---
+
+### MCPServerToolSync Model
+
+Represents the request body for synchronizing tools on an MCP server.
+
+---
+
+#### `selected_tools` *(array[string])* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+List of tool names to create or synchronize. Each tool name must have minimum 1 character.
+
+---
+
+#### Example
+
+```json
+{
+  "selected_tools": [
+    "string"
+  ]
+}
+```

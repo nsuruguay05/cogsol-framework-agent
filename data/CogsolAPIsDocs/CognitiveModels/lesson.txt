@@ -1,0 +1,60 @@
+---
+sidebar_position: 9
+---
+
+### Lessons Model
+
+Represents an instructional unit or educational content designed to provide context, explanation, or guidance related to a system or assistant's behavior.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier for the lesson.  
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+The title or label of the lesson.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `content` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+The main instructional text or information conveyed by the lesson.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `context_of_application` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Describes the situation or conditions in which this lesson is applicable.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `additional_metadata` *(object, Optional)*  
+Custom key-value data to provide supplementary information.  
+
+---
+
+#### Example
+```json
+[
+  {
+    "id": 0,
+    "name": "string",
+    "content": "string",
+    "context_of_application": "string",
+    "additional_metadata": {
+      "additionalProp1": [
+        "string"
+      ],
+      "additionalProp2": [
+        "string"
+      ],
+      "additionalProp3": [
+        "string"
+      ]
+    }
+  }
+]
+```

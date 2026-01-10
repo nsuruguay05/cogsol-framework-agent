@@ -1,0 +1,63 @@
+---
+sidebar_position: 9
+---
+
+### Nodes Model
+
+Defines the structure of a node, representing an organizational unit for documents with hierarchical relationships and metadata management settings.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the node. Automatically assigned by the system.
+
+---
+
+#### `delete_orphaned_metadata` *(boolean, Optional)*  
+Indicates whether orphaned metadata should be automatically deleted.  
+**Default:** false
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Name of the node. Minimum length: 1 character.
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the node was created. Automatically set by the system.
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp of the last node update. Automatically updated by the system.
+
+---
+
+#### `initial_block_text` *(string, Optional)*  
+Initial text content or description associated with the node.
+
+---
+
+#### `node_type` *(string, Optional)*  
+Type classification of the node.  
+**Enum values:** Array [4] - specific values depend on system configuration.
+
+---
+
+#### `parent` *(integer, Nullable)*  
+Reference to the parent node identifier for hierarchical organization. Can be null for root nodes.  
+**x-nullable:** true
+
+---
+
+#### Example
+```json
+{
+  "delete_orphaned_metadata": false,
+  "name": "string",
+  "initial_block_text": "string",
+  "node_type": "COMMON",
+  "parent": 0
+}
+```

@@ -1,0 +1,79 @@
+---
+sidebar_position: 18
+---
+
+### Retrieval Model
+
+Represents a retrieval tool configuration, including metadata, behavior flags, and its parameters.
+
+---
+
+#### `id` *(integer, read-only)*  
+Unique identifier for the retrieval tool.  
+
+---
+#### `parameters` *(array of [Parameter](./parameter.md) objects)*  
+A list of input parameters required by the retrieval tool.
+
+---
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+Name of the retrieval tool.  
+- **Min length**: 1  
+
+---
+#### `description` *(string)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Describes the purpose or usage of the retrieval tool.  
+- **Min length**: 1  
+
+---
+#### `created_at` *(string, Read-only, date-time)*  
+Timestamp of creation.  
+
+---
+#### `updated_at` *(string, Read-only, date-time)*  
+Timestamp of the last update.  
+
+---
+#### `show_tool_message` *(boolean)*  
+Whether to show a custom tool message.  
+
+---
+#### `show_assistant_message` *(boolean)*  
+Whether to show a predefined assistant message.  
+
+---
+#### `edit_available` *(boolean)*  
+Indicates whether the tool can be edited by users.  
+
+---
+#### `retrieval_id` *(integer)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Associated retrieval source identifier.  
+- **Min**: -2147483648  
+- **Max**: 2147483647  
+
+---
+#### `answer` *(boolean)*  
+Indicates whether the tool is expected to return a final answer.  
+
+---
+
+#### Example
+```json
+{
+  "parameters": [
+    {
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "retrieval_id": 2147483647,
+  "answer": true
+}
+```

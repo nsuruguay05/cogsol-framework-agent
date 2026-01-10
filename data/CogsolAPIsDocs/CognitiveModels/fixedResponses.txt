@@ -1,0 +1,55 @@
+---
+sidebar_position: 7
+---
+
+### FixedResponses Model
+
+Represents a predefined response associated with a specific topic. These are often used to automate consistent answers to recurring inputs or predefined triggers.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier for the fixed response.  
+
+---
+
+#### `topic` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+The subject or category to which the response is related.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `content` *(string, Required)*  
+The actual response content that should be returned when the topic is matched.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+The label or display name for the fixed response.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `additional_metadata` *(object, Optional)*  
+A flexible field to attach custom metadata as key-value pairs.  
+
+#### Example
+```json
+{
+  "topic": "string",
+  "content": "string",
+  "name": "string",
+  "additional_metadata": {
+    "additionalProp1": [
+      "string"
+    ],
+    "additionalProp2": [
+      "string"
+    ],
+    "additionalProp3": [
+      "string"
+    ]
+  }
+}
+```

@@ -1,0 +1,33 @@
+---
+sidebar_position: 5
+---
+
+### Metadata Model
+
+Defines the structure for a collection of metadata items, representing organized key-value pairs with optional configuration references.
+
+---
+
+#### `metadata` *(array)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Array of metadata items containing key-value pairs and optional configuration references.  
+**Item type:** MetadataItem object with the following structure:
+- `key` *(string, Required)*: The metadata key identifier. Minimum length: 1 character.
+- `values` *(array, Required)*: Array of string values. Minimum 1 item, each with minimum length: 1 character.
+- `metadata_config` *(integer, Nullable)*: Reference to metadata configuration. Can be null.
+
+---
+
+#### Example
+```json
+{
+  "metadata": [
+    {
+      "key": "string",
+      "values": [
+        "string"
+      ],
+      "metadata_config": 0
+    }
+  ]
+}
+```

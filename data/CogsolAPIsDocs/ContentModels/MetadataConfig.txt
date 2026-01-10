@@ -1,0 +1,125 @@
+---
+sidebar_position: 6
+---
+
+### MetadataConfig Model
+
+Defines the structure for metadata configuration, specifying how metadata should be validated, formatted, and used within the system for documents and content organization. Supports both restricted values (predefined list as possible values) and free values configurations.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the metadata configuration. Automatically assigned by the system.  
+**Title:** ID
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Name of the metadata configuration.  
+**Title:** Name  
+**Minimum length:** 1 character
+
+---
+
+#### `possible_values` *(array)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+List of allowed values for this metadata configuration.  
+**Item type:** string  
+**Item constraint:** Minimum length: 1 character per value
+
+**- IMPORTANT OBSERVATION:** Now MetadaConfig accepts free values, so by leaving this array empty [ ], the metadata associated will be treated as a free value metadata config. Please see the examples below.
+
+---
+
+#### `default_value` *(string, Nullable)*  
+Default value for the metadata configuration.  
+**Title:** Default value  
+**Minimum length:** 1 character  
+**x-nullable:** true
+
+---
+
+#### `format` *(string, Nullable)*  
+Format specification for the metadata configuration.  
+**Title:** Format  
+**Minimum length:** 1 character  
+**x-nullable:** true
+
+---
+
+#### `type` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Type of the metadata configuration.  
+**Title:** Type  
+**Enum values:** `STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`, `DATE`, `URL`
+
+---
+
+#### `filtrable` *(boolean)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Indicates if the metadata configuration can be used for filtering operations.  
+**Title:** Filtrable
+
+---
+
+#### `required` *(boolean)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Indicates if this metadata configuration is required when creating metadata items.  
+**Title:** Required
+
+---
+
+#### `in_embedding` *(boolean)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Indicates if the metadata configuration should be included in embedding operations.  
+**Title:** In embedding
+
+---
+
+#### `in_retrieval` *(boolean)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Indicates if the metadata configuration should be included in retrieval operations.  
+**Title:** In retrieval
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the metadata configuration was created. Automatically set by the system.  
+**Title:** Created at
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp of the last metadata configuration update. Automatically updated by the system.  
+**Title:** Updated at
+
+---
+
+#### Examples
+```json
+[
+  {
+    "id": 0,
+    "name": "Relevance",
+    "type": "STRING",
+    "possible_values": ["Top","Medium","High","Low"],
+    "default_value": "Low",
+    "format": "string",
+    "filtrable": true,
+    "required": true,
+    "in_embedding": true,
+    "in_retrieval": true
+  }
+]
+```
+**Free values metadata config**
+```json
+[
+  {
+    "id": 0,
+    "name": "Author notes",
+    "type": "STRING",
+    "possible_values": [],
+    "default_value": "string",
+    "format": null,
+    "filtrable": true,
+    "required": true,
+    "in_embedding": true,
+    "in_retrieval": true
+  }
+]
+```

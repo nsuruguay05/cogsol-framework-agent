@@ -1,0 +1,103 @@
+---
+sidebar_position: 11
+---
+
+### DocumentBlocks Model
+
+Defines the structure of a document with embedded blocks, representing a complete document object including all associated content blocks and metadata.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the document. Automatically assigned by the system.
+
+---
+
+#### `metadata` *(string, ReadOnly)*  
+Document metadata stored as a string, typically in JSON format. Contains additional information about the document.
+
+---
+
+#### `blocks` *(string, ReadOnly)*  
+String representation of the blocks associated with this document. Contains the block structure and content.
+
+---
+
+#### `node_id` *(array, ReadOnly)*  
+Array of node identifiers that this document is associated with. Represents the organizational structure placement of the document.
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Name of the document. Minimum length: 1 character.
+
+---
+
+#### `doc_type` *(string, ReadOnly)*  
+Type of the document. Automatically determined by the system.  
+**Enum values:** `Video`, `Latex Slideshow`, `PDF Slideshow`, `Latex Document`, `Text Document`, `Webpage`, `Transcription`
+
+---
+
+#### `processing_status` *(string, ReadOnly)*  
+Current processing status of the document. Automatically updated by the system.  
+**Enum values:** `CREATED`, `PROCESSING`, `PROCESSED`, `ERROR`
+
+---
+
+#### `processing_error_details` *(string, ReadOnly, Nullable)*  
+Detailed error information if document processing failed. Can be null if no errors occurred.  
+Minimum length: 1 character when present.  
+**x-nullable:** true
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the document was created. Automatically set by the system.
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp of the last document update. Automatically updated by the system.
+
+---
+
+#### `initial_block_text` *(string, Optional)*  
+The initial text content or preview of the document. Used for quick reference and search purposes.
+
+---
+
+#### `node` *(integer, Nullable)*  
+Primary node identifier that this document belongs to. Can be null if not assigned to a specific node.  
+**x-nullable:** true
+
+---
+
+#### `embedding` *(integer, Nullable)*  
+Reference to the embedding configuration associated with this document. Can be null if no embedding is configured.  
+**x-nullable:** true
+
+---
+
+#### Example
+```json
+[
+    {
+      "id": 0,
+      "metadata": "string",
+      "blocks": "string",
+      "node_id": [
+        "string"
+      ],
+      "name": "string",
+      "doc_type": "Video",
+      "processing_status": "CREATED",
+      "processing_error_details": "string",
+      "created_at": "2025-07-02T12:51:51.594Z",
+      "updated_at": "2025-07-02T12:51:51.594Z",
+      "initial_block_text": "string",
+      "node": 0,
+      "embedding": 0
+    }
+  ]
+```

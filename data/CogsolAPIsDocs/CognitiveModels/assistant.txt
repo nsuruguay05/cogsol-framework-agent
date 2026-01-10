@@ -1,0 +1,194 @@
+---
+sidebar_position: 1
+---
+
+### Assistant Model
+
+Defines the structure and configuration of an assistant, including behavioral logic, prompts, and retrieval integrations.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the assistant. Automatically assigned by the system.
+
+---
+
+#### `generation_config` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Name of a valid generation configuration preset to be used in the main model call. Must match a predefined configuration.
+
+---
+
+#### `generation_config_pretools` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Name of a valid generation configuration preset to apply before tool execution. Acts as a preprocessing directive. Must match a predefined configuration.
+
+---
+
+#### `description` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+A short summary describing the assistant’s purpose or scope. Minimum 1 character.
+
+---
+
+#### `system_prompt` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Message that helps set the assistant's behavior, task and tone. Must be between 1 and 11400 characters.
+
+---
+
+#### `temperature` *(number)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Controls randomness in model responses:  
+- `0`: Deterministic  
+- `2`: Very creative  
+Must be between 0 and 2.
+
+---
+
+#### `max_responses` *(integer, Optional)*  
+Maximum number of responses the assistant can return per user input. Range: -2,147,483,648 to 2,147,483,647.
+
+---
+
+#### `max_msg_length` *(integer, Optional)*  
+Maximum length of each message in characters or tokens. Range: -2,147,483,648 to 2,147,483,647.
+
+---
+
+#### `initial_message` *(string, Optional)*  
+The message with which the assistant starts the conversation.
+
+---
+
+#### `end_message` *(string, Optional)*  
+The message the assistant sends when it is forced to end the conversation for safety reasons.
+
+---
+
+#### `add_to_user_message` *(string, Optional)*  
+Additional text appended to user messages for specific purposes.
+
+---
+
+#### `max_consecutive_tool_calls` *(integer, Optional)*  
+Maximum consecutive tool calls allowed for the assistant. Range: -2,147,483,648 to 2,147,483,647.
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the assistant was created.
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp of the last assistant update.
+
+---
+
+#### `retrieval_faq` *(integer, ReadOnly, Nullable)*  
+Reference to the associated FAQ data source used by the assistant.
+
+---
+
+#### `retrieval_fixed_faq` *(integer, ReadOnly, Nullable)*  
+Reference to the fixed FAQ response set.
+
+---
+
+#### `retrieval_lessons` *(integer, ReadOnly, Nullable)*  
+Reference to a lesson-based knowledge source.
+
+---
+
+#### `matrix_mode_available` *(boolean, Optional)*  
+Indicates whether matrix reasoning mode is enabled for the assistant.
+
+---
+
+#### `not_info_message` *(string, Optional)*  
+Message that the assistant sends when it lacks information to answer a query.
+
+---
+
+#### `strategy_to_optimize_tokens` *(string, Optional)*  
+Method to reduce the number of tokens in search messages from previous interactions. Must be at least 1 character if provided.
+
+---
+
+#### `faq_available` *(boolean, Optional)*  
+Whether FAQ functionality is enabled.
+
+---
+
+#### `fixed_available` *(boolean, Optional)*  
+Whether fixed predefined messages are supported.
+
+---
+
+#### `lessons_available` *(boolean, Optional)*  
+Whether the assistant can use lesson-based content.
+
+---
+
+#### `realtime_available` *(boolean, Optional)*  
+Enables real-time interaction features if set to true.
+
+---
+
+#### `info` *(string, Optional)*  
+Additional assistant info or metadata string. Minimum 1 character if provided.
+
+---
+
+#### `colors` *(object, Optional)*  
+Object defining UI color configuration for the assistant. May be `null`.
+
+---
+
+#### `logo` *(string, URI, Optional)*  
+URL pointing to the logo representing the assistant. Maximum 500 characters.
+
+---
+
+#### `streaming_available` *(boolean, Optional)*  
+Indicates if streaming responses are supported for the assistant.
+
+---
+
+#### `tools` *([integer], Optional)*  
+List of tool IDs that are available to the assistant. Values must be unique.
+
+---
+
+#### `pretools` *([integer], Optional)*  
+List of pre-execution tool IDs triggered before user interaction. Values must be unique.
+
+#### Example
+```json
+{
+  "generation_config": "string",
+  "generation_config_pretools": "string",
+  "description": "string",
+  "system_prompt": "string",
+  "temperature": 2,
+  "max_responses": 2147483647,
+  "max_msg_length": 2147483647,
+  "initial_message": "string",
+  "end_message": "string",
+  "add_to_user_message": "string",
+  "max_consecutive_tool_calls": 2147483647,
+  "matrix_mode_available": true,
+  "not_info_message": "string",
+  "strategy_to_optimize_tokens": "string",
+  "faq_available": true,
+  "fixed_available": true,
+  "lessons_available": true,
+  "realtime_available": true,
+  "info": "string",
+  "colors": {},
+  "logo": "string",
+  "streaming_available": true,
+  "tools": [
+    0
+  ],
+  "pretools": [
+    0
+  ]
+}
+```

@@ -1,0 +1,54 @@
+---
+sidebar_position: 6
+---
+
+### CommonQuestions Model
+
+Represents a frequently asked question (FAQ) and its corresponding answer, optionally enriched with metadata. CommonQuestions are typically tied to a specific assistant and are used for quick reference or automated answers.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the common question.  
+
+---
+
+#### `name` *(string)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+The title or label of the common question.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `content` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span> 
+The detailed answer or explanation associated with the question.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `additional_metadata` *(object, Optional)*  
+A map of key-value pairs containing supplementary metadata for the question.  
+- Can be used to categorize, tag, or index the question for advanced filtering or integrations.  
+
+---
+
+#### Example
+```json
+{
+  "name": "string",
+  "content": "string",
+  "additional_metadata": {
+    "additionalProp1": [
+      "string"
+    ],
+    "additionalProp2": [
+      "string"
+    ],
+    "additionalProp3": [
+      "string"
+    ]
+  }
+}
+```
+
+
+  

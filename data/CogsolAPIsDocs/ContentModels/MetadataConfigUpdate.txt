@@ -1,0 +1,79 @@
+---
+sidebar_position: 7
+---
+
+### MetadataConfigUpdate Model
+
+Defines the structure for updating metadata configurations, allowing partial modifications of existing metadata configuration settings.
+
+---
+
+#### `name` *(string, Optional)*  
+Name of the metadata configuration.  
+**Title:** Name  
+**Minimum length:** 1 character
+
+---
+
+#### `possible_values` *(array, Optional)*  
+List of allowed values for this metadata configuration.  
+**Item type:** string  
+**Item constraint:** Minimum length: 1 character per value
+
+---
+
+#### `default_value` *(string, Optional)*  
+Default value for the metadata configuration.  
+**Title:** Default value  
+**Minimum length:** 1 character  
+**x-nullable:** true
+
+---
+
+#### `format` *(string, Optional)*  
+Format specification for the metadata configuration.  
+**Title:** Format  
+**Minimum length:** 1 character  
+**x-nullable:** true
+
+---
+
+#### `filtrable` *(boolean, Optional)*  
+Indicates if the metadata configuration can be used for filtering operations.  
+**Title:** Filtrable
+
+---
+
+#### `required` *(boolean, Optional)*  
+Indicates if this metadata configuration is required when creating metadata items.  
+**Title:** Required
+
+---
+
+#### `in_embedding` *(boolean, Optional)*  
+Indicates if the metadata configuration should be included in embedding operations.  
+**Title:** In embedding
+
+---
+
+#### `in_retrieval` *(boolean, Optional)*  
+Indicates if the metadata configuration should be included in retrieval operations.  
+**Title:** In retrieval
+
+---
+
+#### Example
+```json
+{
+  "name": "string",
+  "possible_values": [
+    "string"
+  ],
+  "default_value": "string",
+  "format": "string",
+  "filtrable": true,
+  "required": true,
+  "in_embedding": true,
+  "in_retrieval": true
+}
+```

@@ -1,0 +1,66 @@
+---
+sidebar_position: 15
+---
+
+### Filter Model
+
+Represents metadata filter configuration for controlling data filtering and validation.
+
+---
+
+#### `metadata_config_id` *(integer, Optional)*  
+Metadata configuration ID. Range: -2147483648 to 2147483647. This field is nullable.
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Name of the filter. Minimum 1 character.
+
+---
+
+#### `type` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Type of the filter. Minimum 1 character.
+
+---
+
+#### `description` *(string, ReadOnly)*  
+Description of the filter. Minimum 1 character. Automatically managed by the system.
+
+---
+
+#### `required` *(boolean, ReadOnly)*  
+Whether the filter is required. Automatically determined by the system.
+
+---
+
+#### `possible_values` *(array[string], Optional)*  
+List of possible values for the filter. This field is nullable, and each value can also be nullable.
+
+---
+
+#### `format` *(string, Optional)*  
+Format specification for the filter. Minimum 1 character. This field is nullable.
+
+---
+
+#### `delete` *(boolean, Optional)*  
+If true, deletes existing filters without creating new ones. Default value is false.
+
+---
+
+#### Example
+
+```json
+{
+  "metadata_config_id": 0,
+  "name": "string",
+  "type": "string",
+  "description": "string",
+  "required": true,
+  "possible_values": [
+    "string"
+  ],
+  "format": "string",
+  "delete": false
+}
+```

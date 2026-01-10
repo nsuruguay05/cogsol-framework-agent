@@ -1,0 +1,100 @@
+---
+sidebar_position: 4
+---
+
+### FullChat Model
+
+Represents a complete chat session with all detailed information including messages, references, and metadata.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier for the chat. Automatically assigned by the system.
+
+---
+
+#### `messages` *(string, ReadOnly)*  
+Chat messages content. Automatically managed by the system.
+
+---
+
+#### `references` *(array[Reference])* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+List of references used in the chat. Each item follows the [Reference](./reference.md) model.
+
+---
+
+#### `title` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Title of the chat. Minimum 1 character.
+
+---
+
+#### `like` *(boolean, Optional)*  
+User's like/dislike status. This field is nullable.
+
+---
+
+#### `comment` *(string, Optional)*  
+User's comment on the chat. This field is nullable.
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the chat was created. Automatically set by the system.
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp when the chat was last updated. Automatically maintained by the system.
+
+---
+
+#### `matrix_mode` *(boolean, Optional)*  
+Whether matrix mode is enabled for this chat.
+
+---
+
+#### `execution_status` *(string, Optional)*  
+Current execution status of the chat. Possible values:
+- `AVAILABLE`
+- `PROCESSING` 
+- `ERROR`
+- `PENDING`
+
+---
+
+#### `assistant` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+ID of the associated assistant.
+
+---
+
+#### `tools` *(array[integer], Optional)*  
+List of unique tool IDs used in the chat.
+
+---
+
+#### Example
+
+```json
+{
+  "id": 0,
+  "messages": "string",
+  "references": [
+    {
+      "reference_num": 0,
+      "source": "string",
+      "showed_num": 0
+    }
+  ],
+  "title": "string",
+  "like": true,
+  "comment": "string",
+  "created_at": "2025-05-28T14:33:02.274Z",
+  "updated_at": "2025-05-28T14:33:02.274Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE",
+  "assistant": 0,
+  "tools": [
+    0
+  ]
+}
+```

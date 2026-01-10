@@ -1,0 +1,4429 @@
+---
+sidebar_position: 1
+slug: /api-reference/cognitive
+---
+
+# Cognitive
+
+## Apps
+
+### Get all available apps
+
+**GET** `/apps-generator/`  
+Retrieves a list of all applications available in the Generator system.
+
+---
+
+#### Returns  
+An array of objects, each representing an available application in the Generator system.
+
+
+## Assistants
+
+### List all assistants
+
+**GET** `/assistants/`  
+Retrieves a list of all assistant configurations available in the system, including behavioral settings, retrieval integrations, and user interface options.
+
+---
+
+#### Query parameters *(optional)*
+`page` *(integer)*:  
+  The page number within the paginated result set. Use this parameter to navigate through large result sets. Default is usually 1.
+
+`page_size` *(integer)*:  
+  The number of results to return per page. This allows control over the size of each result set and helps manage performance and load. Typical default is 10 or 20.
+
+---
+
+#### Returns  
+A list of [assistant](./Cognitive-models/assistant.md) objects, each representing a configured assistant with associated behavioral rules, retrieval strategies, and UI preferences.
+
+---
+
+#### Status Code
+
+`200 OK`: List returned successfully.
+
+`502 Bad Gateway`: Error retrieving assistants data.
+
+#### Response example  
+```json
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "generation_config": "string",
+      "generation_config_pretools": "string",
+      "description": "string",
+      "system_prompt": "string",
+      "temperature": 2,
+      "max_responses": 2147483647,
+      "max_msg_length": 2147483647,
+      "initial_message": "string",
+      "end_message": "string",
+      "add_to_user_message": "string",
+      "max_consecutive_tool_calls": 2147483647,
+      "created_at": "2025-05-28T12:34:00.601Z",
+      "updated_at": "2025-05-28T12:34:00.601Z",
+      "retrieval_faq": 0,
+      "retrieval_fixed_faq": 0,
+      "retrieval_lessons": 0,
+      "matrix_mode_available": true,
+      "not_info_message": "string",
+      "strategy_to_optimize_tokens": "string",
+      "faq_available": true,
+      "fixed_available": true,
+      "lessons_available": true,
+      "realtime_available": true,
+      "info": "string",
+      "colors": {},
+      "logo": "string",
+      "streaming_available": true,
+      "tools": [
+        0
+      ],
+      "pretools": [
+        0
+      ]
+    }
+  ]
+}
+```
+---
+
+### Create a new assistant
+
+**POST** `/assistants/`  
+Creates a new assistant configuration with customizable behavior, tool usage, and interface options.
+
+---
+
+#### Request body  
+The body must be a JSON [assistant](./Cognitive-models/assistant.md) object containing the assistant configuration fields.
+
+---
+
+#### Request example  
+```json
+{
+  "generation_config": "string",
+  "generation_config_pretools": "string",
+  "description": "string",
+  "system_prompt": "string",
+  "temperature": 2,
+  "max_responses": 2147483647,
+  "max_msg_length": 2147483647,
+  "initial_message": "string",
+  "end_message": "string",
+  "add_to_user_message": "string",
+  "max_consecutive_tool_calls": 2147483647,
+  "matrix_mode_available": true,
+  "not_info_message": "string",
+  "strategy_to_optimize_tokens": "string",
+  "faq_available": true,
+  "fixed_available": true,
+  "lessons_available": true,
+  "realtime_available": true,
+  "info": "string",
+  "colors": {},
+  "logo": "string",
+  "streaming_available": true,
+  "tools": [
+    0
+  ],
+  "pretools": [
+    0
+  ]
+}
+```
+---
+
+#### Returns  
+The created [assistant](./Cognitive-models/assistant.md) model object.
+
+---
+
+#### Status Code
+
+
+`201 Created`: Assistant created successfully.
+
+`400 Bad Request`: Input validation failed.
+
+---
+
+### Get all chats or all chats from a specific assistant
+
+**GET** `/assistants/{assistant}/chats/`  
+Retrieves a list of all chats or all chats associated with a specific assistant, including metadata, execution status, and chat session details.
+
+---
+#### Path parameters
+
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the assistant whose chat sessions you want to retrieve. This is required when targeting a specific assistant's chats.
+
+---
+#### Query parameters  
+`page` *(integer, Optional)*:  
+  The page number within the paginated result set. Useful for navigating through large lists of chat sessions.
+
+`page_size` *(integer, Optional)*:  
+  The number of results to return per page. Helps optimize loading and performance in UI or API clients.
+
+---
+
+#### Returns  
+An array of [chat](./Cognitive-models/chat.md) objects, each representing a single conversation session including its configuration, status, and metadata.
+
+---
+
+#### Status Code
+
+`200 OK`: List of chats returned successfully.
+
+`404 Not Found`: Assistant with given ID does not exist.
+
+---
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "title": "string",
+    "assistant": 0,
+    "messages": "string",
+    "max_responses": "string",
+    "max_msg_length": "string",
+    "comment": "string",
+    "like": true,
+    "created_at": "2025-05-28T12:45:56.943Z",
+    "updated_at": "2025-05-28T12:45:56.943Z",
+    "matrix_mode": true,
+    "execution_status": "AVAILABLE"
+  }
+]
+```
+
+---
+
+### Create a new chat for an assistant
+
+**POST** `/assistants/{assistant}/`  
+Creates a new chat session linked to a specific assistant. Optionally, an initial message and metadata can be included to initiate the conversation contextually.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the assistant with which this new chat session will be associated.
+
+---
+
+#### Request body  
+A JSON [optionalUserMessage](./Cognitive-models/optionalUserMessage.md) object containing the following fields:
+
+---
+
+#### Request example  
+```json
+{
+  "message": "string",
+  "metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
+```
+---
+
+#### Returns  
+The [chat](./Cognitive-models/chat.md) model object created, including all configuration and system-assigned fields.
+
+---
+
+#### Status Code
+
+`201 Created`: Chat successfully created.
+
+`400 Bad Request`: Invalid input or exceeded message length.
+
+`404 Not Found`: Assistant not found with the given ID.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T12:53:42.787Z",
+  "updated_at": "2025-05-28T12:53:42.787Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+---
+
+### Get all chats asynchronously for an assistant
+
+**GET** `/assistants/{assistant}/chats/async/`  
+Retrieves a list of all [chats](./Cognitive-models/chat.md) associated with a given assistant using an asynchronous query. This is useful when dealing with high-latency or large datasets.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+:  
+  The ID of the assistant whose chat sessions you want to retrieve asynchronously.
+
+---
+
+#### Query parameters  
+`page` *(integer, Optional)*:  
+  The page number within the paginated result set. Allows navigation through large sets of chat sessions.
+
+`page_size` *(integer, Optional)*:  
+  The number of chat results to return per page. Helps control performance and user interface load times.
+
+---
+
+#### Returns  
+A list of [chat](./Cognitive-models/chat.md) objects associated with the specified assistant. The response includes key information such as chat status, timestamps, and configuration limits.
+
+---
+
+#### Status Code
+
+`200 OK`: List of chats returned successfully.
+
+`404 Not Found`: Assistant with the given ID does not exist.
+
+---
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "title": "string",
+    "assistant": 0,
+    "messages": "string",
+    "max_responses": "string",
+    "max_msg_length": "string",
+    "comment": "string",
+    "like": true,
+    "created_at": "2025-05-28T13:04:18.241Z",
+    "updated_at": "2025-05-28T13:04:18.241Z",
+    "matrix_mode": true,
+    "execution_status": "AVAILABLE"
+  }
+]
+```
+
+---
+
+### Create a new chat asynchronously
+
+**POST** `/assistants/{assistant}/chats/async/`  
+Creates a new chat session linked to a specific assistant using an asynchronous execution model. An optional initial user message and metadata can be included to initiate the chat contextually.
+
+---
+
+#### Path parameters  
+`assistant` *(string, Required)*:  
+  The unique ID of the assistant for which the chat session is being created.
+
+---
+#### Request body  
+A JSON [optionalUserMessage](./Cognitive-models/optionalUserMessage.md) object containing the following fields:
+
+---
+
+#### Request example  
+```json
+{
+  "message": "string",
+  "metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
+```
+
+---
+#### Returns  
+A [chat](./Cognitive-models/chat.md) object with details of the session configuration, timestamps, and execution status.
+
+---
+
+#### Status Code
+
+`201 Created`: Chat successfully created and configuration returned.
+
+`400 Bad Request`: Assistant is not configured for realtime chat.
+
+`404 Not Found`: Assistant not found.
+
+`502 Bad Gateway`: Failed to connect to the Generator API.
+
+`504 Gateway Timeout`: Timeout from the Generator API.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T19:23:14.178Z",
+  "updated_at": "2025-05-28T19:23:14.179Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+
+---
+
+### Get all streaming-enabled chats for an assistant
+
+**GET** `/assistants/{assistant}/chats_stream/`  
+Retrieves a list of all [chats](./Cognitive-models/chat.md) associated with a specific assistant, including chat metadata, message history, and configuration. This endpoint is intended for retrieving chats that were created with streaming capabilities.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the assistant whose streaming-compatible chats you want to retrieve.
+
+---
+
+#### Query parameters  
+`page` *(integer, Optional)*:  
+  Page number within the paginated result set. Allows client-side navigation through large datasets.
+
+`page_size` *(integer, Optional)*:  
+  Maximum number of chat entries to return per page. Helps manage load performance and UI rendering.
+
+---
+
+#### Returns  
+An array of [chat](./Cognitive-models/chat.md) objects containing metadata and configuration associated with each chat session, including assistant ID and streaming-related flags.
+
+---
+
+#### Status Code
+
+`200 OK`: List of chats returned successfully.
+
+`404 Not Found`: Assistant with the given ID does not exist.
+
+---
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "title": "string",
+    "assistant": 0,
+    "messages": "string",
+    "max_responses": "string",
+    "max_msg_length": "string",
+    "comment": "string",
+    "like": true,
+    "created_at": "2025-05-28T13:21:29.314Z",
+    "updated_at": "2025-05-28T13:21:29.314Z",
+    "matrix_mode": true,
+    "execution_status": "AVAILABLE"
+  }
+]
+```
+
+---
+
+### Create a new streaming-enabled chat
+
+**POST** `/assistants/{assistant}/chats_stream/`  
+Creates a new chat session associated with a specific assistant and designed for streaming-enabled interactions.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+:  
+  The unique ID of the assistant to which the streaming chat will be linked.
+
+---
+
+#### Request body  
+A JSON [optionalUserMessage](./Cognitive-models/optionalUserMessage.md) object containing the following fields:
+
+---
+
+#### Request example  
+```json
+{
+  "message": "string",
+  "metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
+```
+
+---
+
+#### Returns  
+A [chat](./Cognitive-models/chat.md) object that includes metadata, session configuration, and chat tracking fields.
+
+---
+
+#### Status Code
+
+`201 Created`: Chat successfully created.
+
+`400 Bad Request`: Invalid input or exceeded message length.
+
+`404 Not Found`: Assistant not found with the given ID.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T13:29:46.828Z",
+  "updated_at": "2025-05-28T13:29:46.828Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+---
+
+### Get common questions for an assistant
+
+**GET** `/assistants/{assistant}/common_questions/`  
+Retrieves a list of frequently asked questions (common questions) and their corresponding answers for a specific assistant. This can be used to pre-populate UI with helpful suggestions or shortcuts.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+:  
+  The unique ID of the assistant for which to retrieve common questions.
+
+---
+
+#### Query parameters  
+`page` *(integer, Optional)*:  
+  The page number within the paginated result set. Useful for navigating large question sets.
+
+`page_size` *(integer, Optional)*:  
+  The number of results to return per page.
+
+---
+
+#### Returns  
+A list of [common question](./Cognitive-models/commonQuestions.md) objects.
+
+---
+
+#### Status Code
+
+`200 OK`: List of common questions returned successfully.
+
+`404 Not Found`: Assistant not found or no common questions available.
+
+---
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "name": "string",
+    "content": "string",
+    "additional_metadata": {
+      "additionalProp1": [
+        "string"
+      ],
+      "additionalProp2": [
+        "string"
+      ],
+      "additionalProp3": [
+        "string"
+      ]
+    }
+  }
+]
+```
+
+---
+
+### Update a common question
+
+**PUT** `/assistants/{assistant}/common_questions/{question}/`  
+Updates an existing common question associated with a specific assistant.
+
+---
+
+#### Path parameters  
+`assistant` *(string, Required)*:  
+  The ID of the assistant associated with the question.
+
+`question` *(string, Required)*:  
+  The unique ID of the question to update.
+
+---
+
+#### Request body  
+A JSON object matching the [common questions](./Cognitive-models/commonQuestions.md) model:
+
+
+#### Request example  
+```json
+{
+  "name": "string",
+  "content": "string",
+  "additional_metadata": {
+    "additionalProp1": [
+      "string"
+    ],
+    "additionalProp2": [
+      "string"
+    ],
+    "additionalProp3": [
+      "string"
+    ]
+  }
+}
+```
+---
+
+#### Status Code
+
+`200 OK`: The question was updated successfully.
+
+`400 Bad Request`: Input data was invalid.
+
+`404 Not Found`: Assistant or question not found.
+
+
+---
+### Delete a common question
+
+**DELETE** `/assistants/{assistant}/common_questions/{question}/`  
+Deletes an existing common question from a specific assistant.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the assistant associated with the question.
+
+`question` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the common question to delete.
+
+---
+
+#### Status Code  
+`200 OK`: Question deleted successfully.  
+
+`404 Not Found`: Assistant or question not found.
+
+---
+
+### Get fixed responses for an assistant
+
+**GET** `/assistants/{assistant}/fixed_questions/`  
+Retrieves all predefined (fixed) responses associated with a specific assistant. These responses are typically static answers mapped to fixed topics or identifiers.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+:  
+  The unique ID of the assistant whose fixed responses you want to retrieve.
+
+---
+
+#### Query parameters  
+`page` *(integer, Optional)*:  
+  Page number in the paginated result set.
+
+`page_size` *(integer, Optional)*:  
+  Maximum number of results to return per page.
+
+---
+
+#### Returns  
+An array of [fixed response](./Cognitive-models/fixedResponses.md) objects, each containing a topic, a name, and response content, along with any optional metadata.
+
+---
+
+#### Status Code  
+`200 OK`: Returns an array of fixed response objects.  
+
+`404 Not Found`: Assistant not found.
+
+---
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "topic": "string",
+    "content": "string",
+    "name": "string",
+    "additional_metadata": {
+      "additionalProp1": [
+        "string"
+      ],
+      "additionalProp2": [
+        "string"
+      ],
+      "additionalProp3": [
+        "string"
+      ]
+    }
+  }
+]
+```
+
+---
+
+### Create a new fixed response
+
+**POST** `/assistants/{assistant}/fixed_questions/`  
+Creates a new fixed (predefined) response associated with a specific assistant. Fixed responses are static answers tied to common topics or use cases.
+
+---
+
+#### Path parameters  
+`assistant` *(string, Required)*:  
+  The ID of the assistant to which the fixed response will be attached.
+
+---
+
+#### Request body  
+A JSON object matching the [fixed response](./Cognitive-models/fixedResponses.md) model:
+
+---
+
+#### Request example  
+```json
+{
+  "topic": "string",
+  "content": "string",
+  "name": "string",
+  "additional_metadata": {
+    "additionalProp1": [
+      "string"
+    ],
+    "additionalProp2": [
+      "string"
+    ],
+    "additionalProp3": [
+      "string"
+    ]
+  }
+}
+```
+---
+
+#### Status Code  
+`201 Created`: Fixed response successfully created.
+
+`400 Bad Request`: Invalid input or exceeded message length.
+ 
+`404 Not Found`: Assistant not found with the given ID.
+
+---
+
+### Update a fixed response
+
+**PUT** `/assistants/{assistant}/fixed_questions/{question}/`  
+Updates an existing fixed (predefined) response associated with a specific assistant.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the assistant associated with the response.
+
+`question` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the fixed response to update.
+
+---
+
+#### Request body  
+A JSON object matching the [fixed response](./Cognitive-models/fixedResponses.md) model:
+
+---
+
+#### Request example  
+```json
+{
+  "topic": "string",
+  "content": "string",
+  "name": "string",
+  "additional_metadata": {
+    "additionalProp1": [
+      "string"
+    ],
+    "additionalProp2": [
+      "string"
+    ],
+    "additionalProp3": [
+      "string"
+    ]
+  }
+}
+```
+---
+
+#### Status Code  
+`201 Created`: The fixed response was updated successfully.
+
+`400 Bad Request`: Invalid input or exceeded message length.
+
+`404 Not Found`: Assistant not found with the given ID.
+
+---
+
+### Delete a fixed response
+
+**DELETE** `/assistants/{assistant}/fixed_questions/{question}/`  
+Deletes an existing fixed (predefined) response from the specified assistant.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the assistant associated with the fixed response.
+
+`question` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the fixed response to delete.
+
+---
+
+#### Status Code  
+`200 OK`: Fixed response deleted successfully.  
+
+`404 Not Found`: Assistant or fixed response not found.
+
+---
+
+### Get all lessons for an assistant
+
+**GET** `https://your-api-domain.com/assistants/{assistant}/lessons/`  
+Retrieves all lessons associated with a specific assistant. Lessons are structured responses tied to specific learning or contextual content.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the assistant whose lessons you want to retrieve.
+
+---
+
+#### Query parameters  
+`page` *(integer, Optional)*:  
+  A page number within the paginated result set.
+
+`page_size` *(integer, Optional)*:  
+  Number of results to return per page.
+
+---
+
+#### Returns  
+An array of [lesson](./Cognitive-models/lesson.md) objects, each with a name, content, context of application, and optional metadata.
+
+---
+
+#### Status Code  
+`200 OK`: List of lessons returned successfully.  
+
+`404 Not Found`: Assistant not found or no lessons available.
+
+---
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "name": "string",
+    "content": "string",
+    "context_of_application": "string",
+    "additional_metadata": {
+      "additionalProp1": [
+        "string"
+      ],
+      "additionalProp2": [
+        "string"
+      ],
+      "additionalProp3": [
+        "string"
+      ]
+    }
+  }
+]
+```
+
+---
+### Create a new lesson
+
+**POST** `/assistants/{assistant}/lessons/`  
+Creates a new lesson associated with a specific assistant. Lessons can be used to provide guided content or structured explanations tied to a specific context.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the assistant to associate with the new lesson.
+
+---
+
+#### Request body  
+A JSON object matching the [lesson](./Cognitive-models/lesson.md) model:
+
+---
+
+#### Request example  
+```json
+{
+  "name": "string",
+  "content": "string",
+  "context_of_application": "string",
+  "additional_metadata": {
+    "additionalProp1": [
+      "string"
+    ],
+    "additionalProp2": [
+      "string"
+    ],
+    "additionalProp3": [
+      "string"
+    ]
+  }
+}
+```
+---
+
+#### Status Code  
+`201 Created`: Lesson successfully created.
+
+`400 Bad Request`: Invalid input or exceeded message length.
+
+`404 Not Found`: Assistant not found with the given ID.
+
+---
+
+### Update a lesson
+
+**PUT** `/assistants/{assistant}/lessons/{lesson}`  
+Updates the content, context, or metadata of an existing lesson associated with a specific assistant.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the assistant associated with the lesson.
+
+`lesson` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the lesson to update.
+
+---
+
+#### Request body  
+A JSON object matching the [lesson](./Cognitive-models/lesson.md) model
+
+---
+
+#### Request example  
+```json
+{
+  "name": "string",
+  "content": "string",
+  "context_of_application": "string",
+  "additional_metadata": {
+    "additionalProp1": [
+      "string"
+    ],
+    "additionalProp2": [
+      "string"
+    ],
+    "additionalProp3": [
+      "string"
+    ]
+  }
+}
+```
+---
+
+#### Status Code  
+`200 OK`: Lesson successfully updated.
+
+`400 Bad Request`: Invalid input or exceeded message length.
+
+`404 Not Found`: Assistant or lesson not found.
+
+---
+### Delete a lesson
+
+**DELETE** `/assistants/{assistant}/lessons/{lesson}`  
+Deletes a specific lesson associated with the given assistant.
+
+---
+
+#### Path parameters  
+`assistant` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the assistant associated with the lesson.
+
+`lesson` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the lesson to delete.
+
+---
+
+#### Status Code  
+`200 OK`: Lesson successfully deleted.  
+
+`404 Not Found`: Assistant or lesson not found.
+
+---
+
+### Retrieve a specific assistant configuration
+
+**GET** `/assistants/{id}/`  
+Fetches detailed information about a single assistant, including generation settings, system behavior, tool configuration, and UI-related options.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the assistant to retrieve.
+
+---
+
+#### Returns  
+An object representing the [assistant](./Cognitive-models/assistant.md) configuration.
+
+---
+
+#### Status Code  
+`200 OK`: Assistant retrieved successfully.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "generation_config": "string",
+  "generation_config_pretools": "string",
+  "description": "string",
+  "system_prompt": "string",
+  "temperature": 2,
+  "max_responses": 2147483647,
+  "max_msg_length": 2147483647,
+  "initial_message": "string",
+  "end_message": "string",
+  "add_to_user_message": "string",
+  "max_consecutive_tool_calls": 2147483647,
+  "created_at": "2025-05-28T19:52:41.527Z",
+  "updated_at": "2025-05-28T19:52:41.527Z",
+  "retrieval_faq": 0,
+  "retrieval_fixed_faq": 0,
+  "retrieval_lessons": 0,
+  "matrix_mode_available": true,
+  "not_info_message": "string",
+  "strategy_to_optimize_tokens": "string",
+  "faq_available": true,
+  "fixed_available": true,
+  "lessons_available": true,
+  "realtime_available": true,
+  "info": "string",
+  "colors": {},
+  "logo": "string",
+  "streaming_available": true,
+  "tools": [
+    0
+  ],
+  "pretools": [
+    0
+  ]
+}
+```
+---
+
+### Update an assistant configuration
+
+**PUT** `/assistants/{id}/`  
+Updates an existing assistant's configuration, including generation behavior, UI settings, enabled features, and tool integrations.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the assistant to update.
+
+---
+
+#### Request body  
+A JSON object matching the [assistant](./Cognitive-models/assistant.md)  model
+
+---
+
+#### Request example  
+```json
+{
+  "generation_config": "string",
+  "generation_config_pretools": "string",
+  "description": "string",
+  "system_prompt": "string",
+  "temperature": 2,
+  "max_responses": 2147483647,
+  "max_msg_length": 2147483647,
+  "initial_message": "string",
+  "end_message": "string",
+  "add_to_user_message": "string",
+  "max_consecutive_tool_calls": 2147483647,
+  "matrix_mode_available": true,
+  "not_info_message": "string",
+  "strategy_to_optimize_tokens": "string",
+  "faq_available": true,
+  "fixed_available": true,
+  "lessons_available": true,
+  "realtime_available": true,
+  "info": "string",
+  "colors": {},
+  "logo": "string",
+  "streaming_available": true,
+  "tools": [
+    0
+  ],
+  "pretools": [
+    0
+  ]
+}
+```
+
+---
+#### Returns  
+An object containing the updated [assistant](./Cognitive-models/assistant.md) configuration, including system-generated timestamps and applied values.
+
+---
+
+#### Status Code
+
+`200 OK`: Assistant configuration updated successfully.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "generation_config": "string",
+  "generation_config_pretools": "string",
+  "description": "string",
+  "system_prompt": "string",
+  "temperature": 2,
+  "max_responses": 2147483647,
+  "max_msg_length": 2147483647,
+  "initial_message": "string",
+  "end_message": "string",
+  "add_to_user_message": "string",
+  "max_consecutive_tool_calls": 2147483647,
+  "created_at": "2025-05-28T14:06:37.207Z",
+  "updated_at": "2025-05-28T14:06:37.207Z",
+  "retrieval_faq": 0,
+  "retrieval_fixed_faq": 0,
+  "retrieval_lessons": 0,
+  "matrix_mode_available": true,
+  "not_info_message": "string",
+  "strategy_to_optimize_tokens": "string",
+  "faq_available": true,
+  "fixed_available": true,
+  "lessons_available": true,
+  "realtime_available": true,
+  "info": "string",
+  "colors": {},
+  "logo": "string",
+  "streaming_available": true,
+  "tools": [
+    0
+  ],
+  "pretools": [
+    0
+  ]
+}
+```
+---
+
+### Partially update an assistant configuration
+
+**PATCH** `/assistants/{id}/`  
+Updates one or more fields of an assistant's configuration. This endpoint is used for partial updates where only a subset of attributes need to be modified.
+
+---
+
+#### Path parameters  
+- `id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the assistant to update.
+
+---
+
+#### Request body  
+A JSON object containing the [assistant](./Cognitive-models/assistant.md) configuration model. Only the fields provided will be updated.
+
+---
+
+#### Request example  
+```json
+{
+  "generation_config": "string",
+  "generation_config_pretools": "string",
+  "description": "string",
+  "system_prompt": "string",
+  "temperature": 2,
+  "max_responses": 2147483647,
+  "max_msg_length": 2147483647,
+  "initial_message": "string",
+  "end_message": "string",
+  "add_to_user_message": "string",
+  "max_consecutive_tool_calls": 2147483647,
+  "matrix_mode_available": true,
+  "not_info_message": "string",
+  "strategy_to_optimize_tokens": "string",
+  "faq_available": true,
+  "fixed_available": true,
+  "lessons_available": true,
+  "realtime_available": true,
+  "info": "string",
+  "colors": {},
+  "logo": "string",
+  "streaming_available": true,
+  "tools": [
+    0
+  ],
+  "pretools": [
+    0
+  ]
+}
+```
+---
+#### Returns  
+An object representing the updated [assistant](./Cognitive-models/assistant.md) configuration, including all current values.
+
+---
+
+#### Status Code
+
+`200 OK`: Partial update was successful.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "generation_config": "string",
+  "generation_config_pretools": "string",
+  "description": "string",
+  "system_prompt": "string",
+  "temperature": 2,
+  "max_responses": 2147483647,
+  "max_msg_length": 2147483647,
+  "initial_message": "string",
+  "end_message": "string",
+  "add_to_user_message": "string",
+  "max_consecutive_tool_calls": 2147483647,
+  "created_at": "2025-05-28T14:09:13.878Z",
+  "updated_at": "2025-05-28T14:09:13.878Z",
+  "retrieval_faq": 0,
+  "retrieval_fixed_faq": 0,
+  "retrieval_lessons": 0,
+  "matrix_mode_available": true,
+  "not_info_message": "string",
+  "strategy_to_optimize_tokens": "string",
+  "faq_available": true,
+  "fixed_available": true,
+  "lessons_available": true,
+  "realtime_available": true,
+  "info": "string",
+  "colors": {},
+  "logo": "string",
+  "streaming_available": true,
+  "tools": [
+    0
+  ],
+  "pretools": [
+    0
+  ]
+}
+```
+---
+### Delete an assistant
+
+**DELETE** `/assistants/{id}/`  
+Deletes an existing assistant and all associated configuration data.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the assistant to delete.
+
+---
+
+#### Status Code  
+`204 No Content`: Assistant was successfully deleted.
+
+---
+
+## Chats
+
+### Retrieve a chat and generate an answer if needed
+
+**GET** `/chats/{id}/`  
+Retrieves the full history and configuration of a specific chat session. If the last message is from the user, the assistant will automatically generate a response.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the chat to retrieve.
+
+---
+
+#### Returns  
+An object containing the [chat](./Cognitive-models/chat.md) details.
+
+---
+
+#### Status Code  
+`200 OK`: Chat retrieved successfully.  
+
+`404 Not Found`: Chat not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T14:14:02.214Z",
+  "updated_at": "2025-05-28T14:14:02.215Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+
+---
+
+### Create a new message in an existing chat
+
+**POST** `/chats/{id}/`  
+Sends a new user message within an existing chat session. Triggers assistant response generation if applicable.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the chat to which the message will be added.
+
+---
+
+#### Request body  
+A JSON object matching the [userMessage](./Cognitive-models/userMessage.md) model
+
+---
+
+#### Request example  
+```json
+{
+  "message": "string",
+  "metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
+```
+---
+
+#### Returns  
+The updated [chat](./Cognitive-models/chat.md) object, including the new message and assistant’s response if applicable.
+
+---
+
+#### Status Code  
+`200 OK`: Message added and response generated successfully.
+
+`400 Bad Request`: Invalid input or malformed request.
+
+`404 Not Found`: Chat not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T14:15:05.645Z",
+  "updated_at": "2025-05-28T14:15:05.645Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+
+---
+
+### Update chat feedback and settings
+
+**PUT** `/chats/{id}/`  
+Update a chat session by adding a like, user comment, or toggling matrix mode.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique identifier of the chat to update.
+
+---
+
+#### Request body  
+A JSON UserLikeComment model.
+
+---
+
+#### Request example  
+```json
+{
+  "like": true,
+  "comment": "string",
+  "matrix_mode": true
+}
+```
+
+---
+
+#### Returns  
+An updated object representing the [chat](./Cognitive-models/chat.md) session.
+
+---
+
+#### Status Code  
+`200 OK`: Chat successfully updated.
+
+`400 Bad Request`: Invalid input data.
+
+`404 Not Found`: Chat not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T14:18:22.222Z",
+  "updated_at": "2025-05-28T14:18:22.222Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+---
+
+### Manually add an assistant message to an existing chat
+
+**POST** `/chats/{id}/add_assistant_message/`  
+Adds a message as if it were sent by the assistant, for use in custom or scripted responses.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  ID of the chat to which the assistant message will be added.
+
+---
+
+#### Request body  
+A JSON [assistantMessage](./Cognitive-models/assistantMessage.md) object, with the assistant's message content:
+
+#### Request example  
+```json
+{
+  "message": "string"
+}
+```
+
+---
+
+#### Returns  
+A newly created [message](./Cognitive-models/message.md) object with associated metadata.
+
+---
+
+#### Status Code  
+`201 Created`: Assistant message was added successfully.
+
+`400 Bad Request`: Invalid message data.
+
+`404 Not Found`: Chat ID not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "role": "assistant",
+  "content": "string",
+  "msg_num": 2147483647,
+  "usr_msg_num": "string",
+  "fixed": "string",
+  "metadata": {},
+  "references": "string",
+  "created_at": "2025-05-28T14:19:40.367Z",
+  "updated_at": "2025-05-28T14:19:40.367Z"
+}
+```
+---
+
+### Create a tool call message in a chat
+
+**POST** `/chats/{id}/add_tool_call_message/`  
+Adds a new message representing a tool function call within a chat.
+
+---
+
+#### Path Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the chat where the tool call message will be added.
+
+---
+
+#### Request Body  
+A JSON [toolMessage](./Cognitive-models/toolMessage.md) object specifying the tool function call
+
+---
+
+#### Request Example  
+```json
+{
+  "function_name": "string",
+  "parameters": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  },
+  "tool_call_id": "string"
+}
+```
+
+---
+
+#### Returns  
+A JSON [message](./Cognitive-models/fullMessage.md) object representing the created tool call message.
+
+---
+
+#### Status Code  
+`201 Created`: Tool call message successfully created.
+
+`400 Bad Request`: Invalid message data.
+
+`404 Not Found`: Chat ID not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "attachments": [
+    {
+      "original_file_name": "string",
+      "file_content": "string"
+    }
+  ],
+  "role": "assistant",
+  "content": "string",
+  "tool_call_id": "string",
+  "function_name": "string",
+  "msg_num": 2147483647,
+  "likes": true,
+  "created_at": "2025-05-28T14:21:00.252Z",
+  "updated_at": "2025-05-28T14:21:00.252Z",
+  "visible": true,
+  "metadata": {},
+  "system_prompt": "string",
+  "functions": {}
+}
+```
+---
+
+### Create a new user message in a chat
+
+**POST** `/chats/{id}/add_user_message/`  
+Adds a message authored by the user to an existing chat thread.
+
+---
+
+#### Path Parameters  
+- `id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the chat where the user message will be added.
+
+---
+
+#### Query Parameters  
+`id` *(string)*:  
+  Redundant if included in path; should match the chat identifier.
+
+---
+
+#### Request Body  
+A [UserMessage](./Cognitive-models/userMessage.md) object.
+
+---
+
+#### Request Example  
+```json
+{
+  "message": "string",
+  "metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
+```
+
+---
+
+#### Returns  
+Returns the newly created [message](./Cognitive-models/fullMessage.md) object.
+
+---
+
+#### Status Code  
+`201 Created`: User message successfully added.
+
+`400 Bad Request`: Invalid input format.
+
+`404 Not Found`: Chat ID not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "role": "assistant",
+  "content": "string",
+  "msg_num": 2147483647,
+  "usr_msg_num": "string",
+  "fixed": "string",
+  "metadata": {},
+  "references": "string",
+  "created_at": "2025-05-28T14:25:37.796Z",
+  "updated_at": "2025-05-28T14:25:37.796Z"
+}
+```
+
+---
+
+### Retrieve a chat and generate an assistant response if needed
+
+**GET** `/chats/{id}/async/`  
+Fetches the chat by its ID and automatically triggers a response generation if the last message is from the user.
+
+---
+
+#### Path Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique identifier of the chat.
+
+---
+
+#### Query Parameters  
+`id` *(string)*:  
+  Redundant if included in path.
+
+---
+
+#### Response  
+Returns the full [chat](./Cognitive-models/chat.md) object including the assistant’s response (if triggered).
+
+---
+
+#### Status Codes  
+`200 OK`: Chat retrieved and processed successfully.  
+
+`404 Not Found`: Chat ID not found.
+
+---
+
+#### Response Example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T14:27:06.339Z",
+  "updated_at": "2025-05-28T14:27:06.339Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+
+---
+
+### Create a new message in a chat asynchronously
+
+**POST** `/chats/{id}/async/`  
+Adds a new user message to an existing chat and triggers an asynchronous assistant response.
+
+---
+
+#### Path Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the chat where the message will be added.
+
+---
+
+#### Query Parameters  
+`id` *(string)*:  
+  Optional if included in path. Represents the chat identifier.
+
+---
+
+#### Request Body  
+A [UserMessage](./Cognitive-models/userMessage.md) model object.
+
+---
+
+#### Request Example  
+```json
+{
+  "message": "string",
+  "metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
+```
+---
+
+
+#### Response  
+Returns the updated [chat](./Cognitive-models/chat.md) object including assistant-generated response if applicable.
+
+---
+
+#### Status Codes  
+`201 Created`: Message created and assistant response started.
+`400 Bad Request`: Invalid request format or missing fields.
+`404 Not Found`: Chat ID not found.
+
+---
+
+#### Response Example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T14:28:25.739Z",
+  "updated_at": "2025-05-28T14:28:25.739Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+---
+
+### Update like, add a comment, or toggle matrix mode in a chat
+
+**PUT** `/chats/{id}/async/`  
+Updates user interaction feedback for an existing chat.
+
+---
+
+#### Path Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  ID of the chat to update.
+
+---
+
+#### Query Parameters  
+`id` *(string)*:  
+  Optional if included in path.
+
+---
+
+#### Request Body  
+A [UserLikeComment](./Cognitive-models/userLikeComment.md)  model object.
+
+---
+
+#### Request Example  
+```json
+{
+  "like": true,
+  "comment": "string",
+  "matrix_mode": true
+}
+```
+
+---
+#### Response  
+Returns the updated [chat](./Cognitive-models/chat.md)  object with feedback fields applied.
+
+---
+
+#### Status Codes  
+`200 OK`: Chat updated successfully.
+
+`400 Bad Request`: Invalid input or payload structure.
+
+`404 Not Found`: Chat not found for the given ID.
+
+---
+
+#### Response Example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T14:30:13.172Z",
+  "updated_at": "2025-05-28T14:30:13.172Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+---
+
+### Retrieve a complete chat with full details
+
+**GET** `/chats/{id}/full/`  
+Fetches all data for a specific chat, including its messages, metadata, and references.
+
+---
+
+#### Path Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the chat to retrieve.
+
+---
+
+#### Query Parameters  
+`id` *(string, Optional)*:  
+  Optional if included in path. Specifies the chat to retrieve.
+
+---
+
+#### Response  
+Returns the full [chat](./Cognitive-models/chat.md)   object with all associated data.
+
+---
+
+#### Status Codes  
+`200 OK`: Successfully retrieved the full chat.
+
+`404 Not Found`: Chat with the specified ID was not found.
+
+---
+
+#### Response Example  
+```json
+{
+  "id": 0,
+  "messages": "string",
+  "references": [
+    {
+      "reference_num": 2147483647,
+      "source": "string",
+      "showed_num": 2147483647
+    }
+  ],
+  "title": "string",
+  "like": true,
+  "comment": "string",
+  "created_at": "2025-05-28T14:33:02.274Z",
+  "updated_at": "2025-05-28T14:33:02.274Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE",
+  "assistant": 0
+}
+```
+---
+
+## Chats_stream
+
+### Retrieve a streamed chat and generate a response
+
+**GET** `/chats_stream/{id}/`  
+Retrieves a specific chat and initiates assistant response generation if the last message is from the user.
+
+---
+
+#### Path Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the chat to retrieve and continue.
+
+---
+
+#### Query Parameters  
+`id` *(string, Optional)*:  
+  Chat identifier (can be passed as a query param or in the path).
+
+---
+
+#### Response  
+Returns a full [chat](./Cognitive-models/chat.md) object with assistant execution status.
+
+---
+#### Status Codes  
+`200 OK`: Request successful and chat data returned.
+`404 Not Found`: Chat with the specified ID does not exist.
+
+---
+
+#### Response Example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T14:36:04.104Z",
+  "updated_at": "2025-05-28T14:36:04.104Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+---
+### Add a new message to a streamed chat
+
+**POST** `/chats_stream/{id}/`  
+Sends a user message to an existing streamed chat, triggering assistant response processing.
+
+---
+
+#### Path Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The ID of the chat where the new message should be added.
+
+---
+
+#### Query Parameters  
+- `id` *(string, Optional)*:  
+  Chat ID (can also be provided in path).
+
+---
+
+#### Request Body  
+An object matching the [user message](./Cognitive-models/userMessage.md) model.
+
+```json
+{
+  "message": "string",
+  "metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
+```
+---
+
+#### Response  
+Returns the updated [chat](./Cognitive-models/chat.md) object with the new message included.
+
+---
+#### Status Codes  
+`201 Created`: Message was successfully added.
+
+`400 Bad Request`: Input validation failed or required fields missing.
+
+`404 Not Found`: No chat found with the given ID.
+
+---
+
+#### Response Example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T14:37:46.994Z",
+  "updated_at": "2025-05-28T14:37:46.994Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+
+---
+
+### Update chat feedback or matrix mode settings
+
+**PUT** `/chats_stream/{id}/`  
+Updates feedback on a specific chat by setting a like, user comment, or toggling matrix mode.
+
+---
+
+#### Path Parameters  
+`id` *(string, Required)*:  
+  The unique ID of the chat to update.
+
+---
+
+#### Query Parameters  
+`id` *(string, Required)*:  
+  Chat ID to apply feedback or matrix mode settings.
+
+---
+
+#### Request Body  
+An object matching the [UserLikeComment](./Cognitive-models/userLikeComment.md) model.
+
+```json
+{
+  "like": true,
+  "comment": "string",
+  "matrix_mode": true
+}
+```
+
+---
+
+#### Response  
+Returns an updated chat object reflecting the applied changes.
+
+---
+#### Status Codes  
+`200 OK`: Successfully updated the chat.
+
+`400 Bad Request`: Input validation failed or required fields missing.
+
+`404 Not Found`: No chat found with the given ID.
+
+---
+
+#### Response Example  
+```json
+{
+  "id": 0,
+  "title": "string",
+  "assistant": 0,
+  "messages": "string",
+  "max_responses": "string",
+  "max_msg_length": "string",
+  "comment": "string",
+  "like": true,
+  "created_at": "2025-05-28T14:40:52.753Z",
+  "updated_at": "2025-05-28T14:40:52.753Z",
+  "matrix_mode": true,
+  "execution_status": "AVAILABLE"
+}
+```
+
+---
+
+## Messages
+
+### Retrieve a single message by ID
+
+**GET** `/messages/{id}/`  
+Fetches the content and metadata of a message using its unique ID.
+
+---
+
+#### Path Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique identifier of the message to retrieve.
+
+---
+
+#### Query Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Message ID.
+
+---
+
+#### Response Body  
+Returns a [Message](./Cognitive-models/message.md) object with metadata and timestamps.
+
+```json
+{
+  "id": 0,
+  "role": "assistant",
+  "content": "string",
+  "msg_num": 2147483647,
+  "usr_msg_num": "string",
+  "fixed": "string",
+  "metadata": {},
+  "references": "string",
+  "created_at": "2025-05-28T14:51:12.528Z",
+  "updated_at": "2025-05-28T14:51:12.528Z"
+}
+```
+#### Status Codes  
+`200 OK`: Message successfully retrieved.
+
+`404 Not Found`: Message with the specified ID does not exist.
+
+---
+
+### Update user feedback on a message
+
+**PUT** `/messages/{id}/`  
+Allows the user to like or dislike a specific message.
+
+---
+
+#### Path Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique identifier of the message to update.
+
+---
+
+#### Query Parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  ID of the message being updated.
+
+---
+
+#### Request Body  
+A [UserLike](./Cognitive-models/userLike.md) model object.
+
+```json
+{
+  "like": true
+}
+```
+
+---
+
+#### Response  
+Returns an updated [chat](./Cognitive-models/chat.md) object reflecting the applied changes.
+
+---
+#### Status Codes  
+`200 OK`: Message feedback successfully updated.
+`400 Bad Request`: Input was invalid or malformed.
+`404 Not Found`: Message with the specified ID was not found.
+
+---
+
+## Reports
+
+### Retrieve aggregated chat report statistics with optional filters
+
+**GET** `/reports/`  
+Returns metadata about chat reports, including counts grouped by status, category, reason, and severity. Supports pagination and filtering by topic, assistant, or date range.
+
+---
+
+#### Query Parameters (optional)  
+- `page` *(integer)*:  
+  Page number within the paginated result set.  
+- `page_size` *(integer)*:  
+  Number of results to return per page.  
+- `topic` *(string)*:  
+  Filter reports based on the associated topic.  
+- `assistant` *(integer)*:  
+  Filter reports by the ID of the assistant.  
+- `start_date` *(string)*:  
+  Start date for filtering reports (format: `YYYY-MM-DD`).  
+- `end_date` *(string)*:  
+  End date for filtering reports (format: `YYYY-MM-DD`).  
+
+---
+
+#### Response Body  
+Returns statistical summaries of existing reports.
+
+```json
+{
+  "total_reports": 0,
+  "status_counts": {
+    "additionalProp1": 0,
+    "additionalProp2": 0,
+    "additionalProp3": 0
+  },
+  "category_counts": {
+    "additionalProp1": 0,
+    "additionalProp2": 0,
+    "additionalProp3": 0
+  },
+  "reason_counts": {
+    "additionalProp1": 0,
+    "additionalProp2": 0,
+    "additionalProp3": 0
+  },
+  "severity_counts": {
+    "additionalProp1": 0,
+    "additionalProp2": 0,
+    "additionalProp3": 0
+  }
+}
+```
+---
+#### Status Codes
+`200 OK`: Report summary retrieved successfully.
+`400 Bad Request`: Invalid query parameters provided.
+`404 Not Found`: No reports match the filter criteria.
+
+---
+
+### Create a new report for a chat interaction
+
+**POST** `/reports/`  
+Submits a structured report tied to a specific chat, capturing feedback related to assistant behavior, accuracy, or user experience.
+
+---
+
+#### Request Body  
+Provide the report attributes in a [chatReport](./Cognitive-models/chatReport.md) model.
+
+```json
+{
+  "category": "CORRECT",
+  "reason": "NOT_IN_DOCS",
+  "severity": "INFO",
+  "topic": "string",
+  "comments": "string",
+  "status": "NO_ISSUES",
+  "chat": 0
+}
+```
+
+#### Status Codes
+`200 OK`: Report submitted successfully.
+
+`400 Bad Request`: Input data is invalid or missing required fields.
+
+`404 Not Found`: The referenced chat ID does not exist.
+
+---
+
+### Retrieve report metrics for an Assistant
+
+**GET** `/reports/metrics/`  
+Returns aggregated statistics about reports, including counts grouped by status, category, reason, and severity. Supports filtering by assistant, topic, and date range.
+
+---
+
+#### Query Parameters (optional)  
+- `topic` *(string)*:  
+  Filter reports by topic.  
+- `assistant` *(integer)*:  
+  Filter reports by the ID of the assistant.  
+- `start_date` *(string)*:  
+  Start date for filtering reports (format: `YYYY-MM-DD`).  
+- `end_date` *(string)*:  
+  End date for filtering reports (format: `YYYY-MM-DD`).  
+
+---
+
+#### Response Body  
+Returns statistical summaries of reports matching the filters.
+
+```json
+{
+  "total_reports": 125,
+  "status_counts": {
+    "open": 80,
+    "closed": 45
+  },
+  "category_counts": {
+    "accuracy": 50,
+    "performance": 75
+  },
+  "reason_counts": {
+    "incorrect_information": 32,
+    "slow_response": 40,
+    "irrelevant_answer": 53
+  },
+  "severity_counts": {
+    "low": 60,
+    "medium": 40,
+    "high": 25
+  }
+}
+```
+
+---
+#### Status Codes
+`200 OK`: Report metrics retrieved successfully.
+
+`400 Bad Request`: Invalid query parameters.
+
+`404 Not Found`: No data found matching the filters.
+
+---
+
+### Retrieve or Update a Chat Report
+
+#### GET `/reports/{id}/`  
+Retrieves the details of a specific chat report by its unique ID.
+
+---
+
+#### Path Parameters  
+- `id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique identifier of the chat report.
+
+---
+
+#### Response  
+Returns a [chat report](./Cognitive-models/chatReport.md) object with detailed information.
+
+```json
+{
+  "id": 0,
+  "category": "CORRECT",
+  "reason": "NOT_IN_DOCS",
+  "severity": "INFO",
+  "topic": "string",
+  "comments": "string",
+  "status": "NO_ISSUES",
+  "created_at": "2025-05-28T15:14:15.401Z",
+  "updated_at": "2025-05-28T15:14:15.401Z",
+  "chat": 0
+}
+```
+#### Status Codes
+`200 OK`: Report retrieved successfully.
+`404 Not Found`: No report found with the provided ID.
+
+---
+### Update a Chat Report
+
+**PUT** `/reports/{id}/`  
+Updates the information of a specific chat report.
+
+---
+
+#### Path Parameters  
+- `id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique identifier of the chat report to update.
+
+---
+
+#### Request Body  
+An object matching the [chat report](./Cognitive-models/chatReport.md) model.
+
+```json
+{
+  "category": "CORRECT",
+  "reason": "NOT_IN_DOCS",
+  "severity": "INFO",
+  "topic": "string",
+  "comments": "string",
+  "status": "NO_ISSUES",
+  "chat": 0
+}
+```
+---
+
+#### Status Code
+`200 OK`: Report successfully updated.
+
+`400 Bad Request`: Invalid input or missing fields.
+
+`404 Not Found`: No report found with the provided ID.
+
+---
+#### Response Body
+
+```json
+{
+  "id": 0,
+  "category": "CORRECT",
+  "reason": "NOT_IN_DOCS",
+  "severity": "INFO",
+  "topic": "string",
+  "comments": "string",
+  "status": "NO_ISSUES",
+  "created_at": "2025-05-28T15:16:22.549Z",
+  "updated_at": "2025-05-28T15:16:22.549Z",
+  "chat": 0
+}
+```
+
+---
+
+### Partially Update a Chat Report
+
+**PATCH** `/reports/{id}/`  
+Partially updates fields of a specific chat report.
+
+---
+
+#### Path Parameters  
+- `id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique ID of the report to update.
+
+---
+
+#### Request Body  
+A partial update to the report. Only include the fields that need to be changed.
+
+```json
+{
+  "category": "CORRECT",
+  "reason": "NOT_IN_DOCS",
+  "severity": "INFO",
+  "topic": "string",
+  "comments": "string",
+  "status": "NO_ISSUES",
+  "chat": 0
+}
+```
+
+----
+#### Response
+Returns the updated [chat report](./Cognitive-models/chatReport.md) object.
+
+---
+#### Status Codes
+`200 OK`: Report successfully updated.
+
+`400 Bad Request`: Invalid or missing data in request body.
+
+`404 Not Found`: No report found with the given ID.
+
+---
+#### Response body
+```json
+{
+  "id": 0,
+  "category": "CORRECT",
+  "reason": "NOT_IN_DOCS",
+  "severity": "INFO",
+  "topic": "string",
+  "comments": "string",
+  "status": "NO_ISSUES",
+  "created_at": "2025-05-28T15:21:48.901Z",
+  "updated_at": "2025-05-28T15:21:48.901Z",
+  "chat": 0
+}
+```
+---
+### Delete a Chat Report
+
+**DELETE** `/reports/{id}/`  
+Deletes a specific chat report permanently.
+
+---
+#### Path Parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique ID of the chat report to delete.
+
+---
+
+#### Status Codes  
+`204 No Content`: Report successfully deleted.  
+
+`404 Not Found`: No report found with the specified ID.
+
+---
+
+## Secrets
+
+### Get All Secrets
+
+**GET** `/secrets/`  
+Retrieves a list of all secrets stored in Azure Key Vault.
+
+---
+
+#### Response  
+Returns an array of [secrets](./Cognitive-models/secret.md), each including its name and value.
+
+```json
+[
+  {
+    "name": "string",
+    "value": "string"
+  }
+]
+```
+---
+#### Status Codes
+`200 OK`: Secrets successfully retrieved.
+
+`404 Not Found`: No secrets found or endpoint is unavailable.
+
+---
+
+### Create a Secret
+
+**POST** `/secrets/`  
+Creates a new secret in Azure Key Vault.
+
+---
+
+#### Request Body  
+A JSON object specifying the [secrets](./Cognitive-models/secret.md) name and value.
+
+```json
+{
+  "name": "string",
+  "value": "string"
+}
+```
+
+---
+### Update a Secret
+
+**PUT** `/secrets/`  
+Updates the value of an existing secret in Azure Key Vault.
+
+---
+#### Request Body  
+A JSON object containing the [secrets](./Cognitive-models/secret.md) name and new value.
+
+```json
+{
+  "name": "string",
+  "value": "string"
+}
+```
+---
+#### Response
+Returns the updated [secret](./Cognitive-models/secret.md) object.
+
+---
+#### Response body
+```json
+{
+  "name": "EXISTING_SECRET",
+  "value": "updatedSecretValue123"
+}
+```
+---
+
+#### Status Codes
+`200 OK`: Secret successfully updated.
+`404 Not Found`: Secret not found.
+
+---
+
+### Delete a Secret
+
+**DELETE** `/secrets/`  
+Deletes a specific secret from Azure Key Vault.
+
+---
+
+#### Request Body  
+A JSON object specifying the name of the [secret](./Cognitive-models/secret.md) to delete.  
+The value field is optional.
+
+```json
+{
+  "name": "string",
+  "value": "string"
+}
+```
+---
+
+#### Response
+Returns the deleted [secret](./Cognitive-models/secret.md) name and optionally its value.
+
+---
+#### Status Codes
+`200 OK`: Secret successfully deleted.
+`404 Not Found`: Secret not found.
+
+---
+
+## Tools
+
+### List Retrieval Tools
+
+**GET** `/tools/retrievals/`  
+Retrieves a paginated list of all configured retrieval tools.
+
+---
+
+#### Query Parameters *(optional)*  
+`page` *(integer)*:  
+  A page number within the paginated result set.  
+`page_size` *(integer)*:  
+  Number of results to return per page.
+
+---
+
+#### Response  
+Returns a paginated list of retrieval tools.
+
+```json
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "parameters": [
+        {
+          "id": 0,
+          "name": "string",
+          "description": "string",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "name": "string",
+      "description": "string",
+      "created_at": "2025-05-28T15:35:09.269Z",
+      "updated_at": "2025-05-28T15:35:09.269Z",
+      "show_tool_message": true,
+      "show_assistant_message": true,
+      "edit_available": true,
+      "retrieval_id": 2147483647,
+      "answer": true
+    }
+  ]
+}
+```
+---
+#### Status Codes
+`200 OK`: List returned successfully.
+
+`404 Not Found`: Retrieval tools not found.
+
+---
+
+### Create a Retrieval Tool
+
+**POST** `/tools/retrievals/`  
+Creates a new retrieval tool configuration.
+
+---
+
+#### Request Body  
+A JSON object describing the new [retrieval](./Cognitive-models/retrieval.md) tool and its parameters.
+
+```json
+{
+  "parameters": [
+    {
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "retrieval_id": 2147483647,
+  "answer": true
+}
+```
+---
+#### Response
+Returns the created [retrieval](./Cognitive-models/retrieval.md) tool object.
+
+---
+#### Response body
+```json
+{
+  "id": 0,
+  "parameters": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T20:55:31.685Z",
+  "updated_at": "2025-05-28T20:55:31.685Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "retrieval_id": 2147483647,
+  "answer": true
+}
+```
+---
+#### Status Codes
+`201 Created`: Tool successfully created.
+
+---
+
+### Retrieve a Specific Retrieval Tool
+
+**GET** `/tools/retrievals/{id}/`  
+Fetches the details of a specific retrieval tool by its unique ID.
+
+---
+
+#### Path Parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  A unique integer value identifying the retrieval tool.
+
+---
+
+#### Response  
+Returns the full definition of the requested [retrieval](./Cognitive-models/retrieval.md) tool.
+
+```json
+{
+  "id": 0,
+  "parameters": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T15:42:01.376Z",
+  "updated_at": "2025-05-28T15:42:01.376Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "retrieval_id": 2147483647,
+  "answer": true
+}
+```
+---
+#### Status Codes
+`200 OK`: Tool retrieved successfully.
+
+`404 Not Found`: No retrieval tool found with the given ID.
+
+---
+
+### Update a Retrieval Tool
+
+**PUT** `/tools/retrievals/{id}/`  
+Updates the details of an existing retrieval tool configuration.
+
+---
+#### Path Parameters  
+- `id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the retrieval tool to update.
+
+---
+
+#### Request Body  
+A JSON object with the updated [retrieval](./Cognitive-models/retrieval.md) tool details and parameters.
+
+```json
+{
+  "parameters": [
+    {
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "retrieval_id": 2147483647,
+  "answer": true
+}
+```
+
+---
+
+#### Response
+Returns the updated [retrieval](./Cognitive-models/retrieval.md) tool object.
+
+```json
+{
+  "id": 0,
+  "parameters": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T15:43:37.541Z",
+  "updated_at": "2025-05-28T15:43:37.541Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "retrieval_id": 2147483647,
+  "answer": true
+}
+```
+---
+#### Status Codes
+`200 OK`: Retrieval tool updated successfully.
+`400 Bad Request`: Invalid or incomplete update data.
+`404 Not Found`: Tool with the given ID does not exist
+
+---
+
+### Update a Retrieval Tool (Partial Update)
+
+**PATCH** `/tools/retrievals/{id}/`  
+Partially updates a retrieval tool’s configuration by modifying only specified fields.
+
+---
+
+#### Path Parameters  
+- `id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the retrieval tool to update.
+
+---
+
+#### Request Body  
+A JSON object with fields to be updated for the [retrieval](./Cognitive-models/retrieval.md) tool.
+
+```json
+{
+  "parameters": [
+    {
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "retrieval_id": 2147483647,
+  "answer": true
+}
+```
+---
+
+#### Response
+Returns the updated [retrieval](./Cognitive-models/retrieval.md) tool object.
+
+---
+#### Response body
+```json
+{
+  "id": 1,
+  "parameters": [
+    {
+      "id": 10,
+      "name": "document_id",
+      "description": "The ID of the document",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "Updated Tool",
+  "description": "Tool to retrieve document metadata",
+  "created_at": "2023-01-01T00:00:00Z",
+  "updated_at": "2023-01-02T00:00:00Z",
+  "show_tool_message": true,
+  "show_assistant_message": false,
+  "edit_available": true,
+  "retrieval_id": 123,
+  "answer": true
+}
+```
+---
+#### Status Codes
+`200 OK`: Tool partially updated successfully.
+`400 Bad Request`: Invalid input.
+`404 Not Found`: Retrieval tool not found.
+
+---
+
+### Delete a Retrieval Tool
+
+**DELETE** `/tools/retrievals/{id}/`  
+Deletes a specific retrieval tool by its unique ID.
+
+---
+
+#### Path Parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  A unique integer value identifying the retrieval tool to be deleted.
+
+---
+
+#### Status Codes  
+`204 No Content`: Retrieval tool successfully deleted.  
+
+`404 Not Found`: Retrieval tool not found.
+
+---
+
+### List Script Tools
+
+**GET** `/tools/scripts/`  
+Retrieves a paginated list of available script tools along with their configurations.
+
+---
+
+#### Query Parameters  
+`page` *(integer, Optional)*: Page number within the result set.  
+`page_size` *(integer, Optional)*: Number of results to return per page.
+
+---
+
+#### Response  
+Returns a paginated list of script tools.
+
+```json
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "parameters": [
+        {
+          "id": 0,
+          "name": "string",
+          "description": "string",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "name": "string",
+      "description": "string",
+      "created_at": "2025-05-28T15:49:44.785Z",
+      "updated_at": "2025-05-28T15:49:44.785Z",
+      "show_tool_message": true,
+      "show_assistant_message": true,
+      "edit_available": true,
+      "code": "string"
+    }
+  ]
+}
+```
+---
+
+#### Status Codes
+`200 OK`: Successfully retrieved the list.
+
+`400 Bad Request`: Invalid pagination or filtering parameters.
+
+---
+
+### Create a Script Tool
+
+**POST** `/tools/scripts/`  
+Creates a new script tool with specified parameters and executable code.
+
+---
+
+#### Request Body  
+A JSON object with configuration details of the [script](./Cognitive-models/script.md) tool.
+
+```json
+{
+  "parameters": [
+    {
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "code": "string"
+}
+```
+---
+
+#### Response
+Returns the created [script](./Cognitive-models/script.md) tool object.
+
+---
+#### Response body
+```json
+{
+  "id": 1,
+  "parameters": [
+    {
+      "id": 10,
+      "name": "input",
+      "description": "User input",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "My Script",
+  "description": "Performs an action",
+  "created_at": "2023-01-01T00:00:00Z",
+  "updated_at": "2023-01-01T00:00:00Z",
+  "show_tool_message": true,
+  "show_assistant_message": false,
+  "edit_available": true,
+  "code": "console.log('Hello World');"
+}
+```
+---
+#### Status Codes
+`201 Created`: Script tool successfully created.
+`400 Bad Request`: Invalid input or missing required fields.
+
+---
+
+### Retrieve Script Tool
+
+**GET** `/tools/scripts/{id}/`  
+Fetches a specific script tool using its unique identifier.
+
+---
+
+#### Path Parameters  
+`id` *(integer, Required)*:  
+  Unique identifier of the script tool to retrieve.
+
+---
+
+#### Response  
+Returns the complete [script](./Cognitive-models/script.md) tool object.
+
+```json
+{
+  "id": 0,
+  "parameters": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T15:56:28.193Z",
+  "updated_at": "2025-05-28T15:56:28.193Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "code": "string"
+}
+```
+---
+
+#### Status Codes
+`200 OK`: Script tool successfully retrieved.
+`404 Not Found`: No script tool exists with the provided ID.
+
+---
+
+### Update Script Tool
+
+**PUT** `/tools/scripts/{id}/`  
+Updates an existing script tool with new values.
+
+---
+
+#### Path Parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique identifier of the script tool to update.
+
+---
+
+#### Request Body  
+A JSON object with the updated details for the [script](./Cognitive-models/script.md) tool.
+
+```json
+{
+  "parameters": [
+    {
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "code": "string"
+}
+```
+---
+
+#### Response
+Returns the updated [script](./Cognitive-models/script.md) tool object.
+
+```json
+{
+  "id": 1,
+  "parameters": [
+    {
+      "id": 10,
+      "name": "param",
+      "description": "desc",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "Updated Script",
+  "description": "Updated description",
+  "created_at": "2023-01-01T00:00:00Z",
+  "updated_at": "2023-01-02T00:00:00Z",
+  "show_tool_message": true,
+  "show_assistant_message": false,
+  "edit_available": true,
+  "code": "console.log('Updated');"
+}
+```
+
+---
+
+#### Status Codes
+`200 OK`: Script tool successfully updated.
+
+`400 Bad Request`: Invalid input or validation failed.
+
+`404 Not Found`: No script tool exists with the provided ID.
+
+---
+
+### Partially Update Script Tool
+
+**PATCH** `/tools/scripts/{id}/`  
+Partially updates a script tool using its unique identifier.
+
+---
+
+#### Path Parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique identifier of the script tool to patch.
+
+---
+
+#### Request Body  
+A JSON [script](./Cognitive-models/script.md) object with any subset of fields to update.
+
+```json
+{
+  "parameters": [
+    {
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "code": "string"
+}
+```
+---
+
+#### Response
+Returns the updated [script](./Cognitive-models/script.md) tool object.
+
+```json
+{
+  "id": 0,
+  "parameters": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T16:00:45.945Z",
+  "updated_at": "2025-05-28T16:00:45.945Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "code": "string"
+}
+```
+---
+#### Status Codes
+`200 OK`: Script tool successfully patched.
+
+`400 Bad Request`: Input validation failed.
+
+`404 Not Found`: No script tool exists with the given ID.
+
+---
+
+### Delete Script Tool
+
+**DELETE** `/tools/scripts/{id}/`  
+Deletes a script tool by its unique identifier.
+
+---
+
+#### Path Parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  Unique identifier of the script tool to delete.
+
+---
+
+#### Status Codes  
+`204 No Content`: Script tool successfully deleted.  
+
+`404 Not Found`: No script tool exists with the given ID.
+
+---
+
+### Update Filters
+
+**POST** `/tools/update_filters/`  
+Update the filters value.
+
+---
+
+#### Request Body  
+A JSON object containing the filter configuration.
+
+```json
+{
+  "metadata_config_id": 2147483647,
+  "name": "string",
+  "type": "string",
+  "possible_values": [
+    "string"
+  ],
+  "format": "string",
+  "delete": false
+}
+```
+
+---
+
+#### Status Codes
+`200 OK`: Filters successfully updated.
+
+`404 Not Found`: Resource not found.
+
+---
+
+## MCP Servers
+
+### List all MCP servers
+
+**GET** `/mcp-servers/`  
+Retrieves a list of all Model Context Protocol (MCP) servers available in the system.
+
+---
+
+#### Query parameters *(optional)*
+`page` *(integer)*:  
+  The page number within the paginated result set. Use this parameter to navigate through large result sets. Default is usually 1.
+
+`page_size` *(integer)*:  
+  The number of results to return per page. This allows control over the size of each result set and helps manage performance and load. Typical default is 10 or 20.
+
+---
+
+#### Returns  
+A list of MCP server objects, each representing a configured server with associated connection details and tool configurations.
+
+---
+
+#### Status Code
+
+`200 OK`: List returned successfully.
+
+`502 Bad Gateway`: Error retrieving MCP servers data.
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "name": "string",
+    "description": "string",
+    "url": "string",
+    "headers": {},
+    "protocol_version": "string",
+    "client_name": "string",
+    "client_version": "string",
+    "active": true,
+    "created_at": "2025-05-28T12:34:00.601Z",
+    "updated_at": "2025-05-28T12:34:00.601Z"
+  }
+]
+```
+
+---
+
+### Create a new MCP server
+
+**POST** `/mcp-servers/`  
+Creates a new Model Context Protocol (MCP) server configuration including connection URL, headers, protocol version, and client information.
+
+---
+
+#### Request body  
+The body must be a JSON object containing the MCP server configuration fields.
+
+---
+
+#### Request example  
+```json
+{
+  "name": "string",
+  "description": "string",
+  "url": "string",
+  "headers": {},
+  "protocol_version": "string",
+  "client_name": "string",
+  "client_version": "string",
+  "active": true
+}
+```
+
+---
+
+#### Returns  
+The created MCP server object.
+
+---
+
+#### Status Code
+
+`201 Created`: MCP server created successfully.
+
+`400 Bad Request`: Input validation failed.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "url": "string",
+  "headers": {},
+  "protocol_version": "string",
+  "client_name": "string",
+  "client_version": "string",
+  "active": true,
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z"
+}
+```
+
+---
+
+### Get a specific MCP server
+
+**GET** `/mcp-servers/{id}/`  
+Retrieves detailed information about a specific MCP server by its unique identifier.
+
+---
+
+#### Path parameters
+
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the MCP server to retrieve.
+
+---
+
+#### Returns  
+An MCP server object containing all configuration details.
+
+---
+
+#### Status Code
+
+`200 OK`: MCP server retrieved successfully.
+
+`404 Not Found`: MCP server with given ID does not exist.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "url": "string",
+  "headers": {},
+  "protocol_version": "string",
+  "client_name": "string",
+  "client_version": "string",
+  "active": true,
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z"
+}
+```
+
+---
+
+### Update an MCP server
+
+**PUT** `/mcp-servers/{id}/`  
+Updates an existing MCP server's configuration including URL, headers, protocol version, client information, and active status.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the MCP server to update.
+
+---
+
+#### Request body  
+A JSON object with the MCP server configuration.
+
+---
+
+#### Request example  
+```json
+{
+  "name": "string",
+  "description": "string",
+  "url": "string",
+  "headers": {},
+  "protocol_version": "string",
+  "client_name": "string",
+  "client_version": "string",
+  "active": true
+}
+```
+
+---
+
+#### Returns  
+The updated MCP server object.
+
+---
+
+#### Status Code
+
+`200 OK`: MCP server updated successfully.
+
+`400 Bad Request`: Input validation failed.
+
+`404 Not Found`: MCP server not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "url": "string",
+  "headers": {},
+  "protocol_version": "string",
+  "client_name": "string",
+  "client_version": "string",
+  "active": true,
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z"
+}
+```
+
+---
+
+### Partially update an MCP server
+
+**PATCH** `/mcp-servers/{id}/`  
+Partially updates specific fields of an MCP server such as name, description, URL, headers, or active status without affecting other configuration.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the MCP server to update.
+
+---
+
+#### Request body  
+A JSON object containing the MCP server configuration fields to update. Only the fields provided will be updated.
+
+---
+
+#### Request example  
+```json
+{
+  "name": "string",
+  "description": "string",
+  "url": "string",
+  "headers": {},
+  "protocol_version": "string",
+  "client_name": "string",
+  "client_version": "string",
+  "active": true
+}
+```
+
+---
+
+#### Returns  
+The updated MCP server object with all current values.
+
+---
+
+#### Status Code
+
+`200 OK`: Partial update was successful.
+
+`400 Bad Request`: Input validation failed.
+
+`404 Not Found`: MCP server not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "url": "string",
+  "headers": {},
+  "protocol_version": "string",
+  "client_name": "string",
+  "client_version": "string",
+  "active": true,
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z"
+}
+```
+
+---
+
+### Delete an MCP server
+
+**DELETE** `/mcp-servers/{id}/`  
+Permanently removes an MCP server configuration and all its associated connection data from the system.
+
+---
+
+#### Path parameters  
+`id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the MCP server to delete.
+
+---
+
+#### Status Code  
+`204 No Content`: MCP server was successfully deleted.
+
+`404 Not Found`: MCP server not found.
+
+---
+
+### Get configured tools for an MCP server
+
+**GET** `/mcp-servers/{server_id}/configured-tools/`  
+Get configured tools for a server without connecting to MCP.
+
+---
+
+#### Path parameters  
+`server_id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the MCP server whose configured tools you want to retrieve.
+
+---
+
+#### Returns  
+An object containing the configured tools and server information.
+
+---
+
+#### Status Code
+
+`200 OK`: Configured tools retrieved successfully.
+
+`404 Not Found`: MCP server not found.
+
+---
+
+#### Response example  
+```json
+{
+  "success": true,
+  "message": "string",
+  "configured_tools": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string"
+    }
+  ],
+  "server_info": {
+    "id": 0,
+    "name": "string",
+    "description": "string"
+  }
+}
+```
+
+---
+
+### Connect to an MCP server
+
+**GET** `/mcp-servers/{server_id}/connect/`  
+Test connection to an MCP server.
+
+---
+
+#### Path parameters  
+`server_id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the MCP server to connect to.
+
+---
+
+#### Returns  
+Connection status and server information.
+
+---
+
+#### Status Code
+
+`200 OK`: Connection test completed successfully.
+
+`500 Internal Server Error`: Server error (e.g., MCP server not found).
+
+---
+
+#### Response example  
+```json
+{
+  "server_name": "string",
+  "connection_successful": true,
+  "available_tools_count": 0,
+  "available_tools": [
+    "string"
+  ],
+  "errors": []
+}
+```
+
+---
+
+### List tools for an MCP server
+
+**GET** `/mcp-servers/{server_id}/tools/`  
+Get available tools from an MCP server.
+
+---
+
+#### Path parameters  
+`server_id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the MCP server whose tools you want to retrieve.
+
+---
+
+#### Returns  
+An object containing available tools and configured tools from the MCP server.
+
+---
+
+#### Status Code
+
+`200 OK`: Available tools from MCP server.
+
+`404 Not Found`: MCP Server not found.
+
+`500 Internal Server Error`: Internal server error.
+
+`502 Bad Gateway`: Failed to connect to MCP server.
+
+---
+
+#### Response example  
+```json
+{
+  "tools": [
+    {
+      "name": "string",
+      "description": "string",
+      "input_schema": null,
+      "parameters": [
+        {
+          "name": "string",
+          "type": "string",
+          "description": "string",
+          "required": true,
+          "enum": null,
+          "properties": null
+        }
+      ],
+      "already_configured": true
+    }
+  ],
+  "configured_tools": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "configured": true
+    }
+  ]
+}
+```
+
+---
+
+### Create tools for an MCP server
+
+**POST** `/mcp-servers/{server_id}/tools/`  
+Create selected MCP tools for a server.
+
+---
+
+#### Path parameters  
+`server_id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the MCP server where the tools will be created.
+
+---
+
+#### Request body  
+A JSON object containing the selected tools to create.
+
+---
+
+#### Request example  
+```json
+{
+  "selected_tools": [
+    "string"
+  ]
+}
+```
+
+---
+
+#### Returns  
+The result of the tool creation operation.
+
+---
+
+#### Status Code
+
+`201 Created`: Tools created successfully.
+
+`400 Bad Request`: Bad request - No tools selected.
+
+`404 Not Found`: MCP Server not found.
+
+`500 Internal Server Error`: Internal server error.
+
+---
+
+#### Response example  
+```json
+{
+  "success": true,
+  "message": "string",
+  "result_data": {},
+  "tools": [
+    {}
+  ],
+  "server_info": {}
+}
+```
+
+---
+
+### Update tools for an MCP server
+
+**PUT** `/mcp-servers/{server_id}/tools/`  
+Synchronizes the tool configuration by replacing the current tool selection with a new set of selected tools for the server.
+
+---
+
+#### Path parameters  
+`server_id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the MCP server whose tools will be updated.
+
+---
+
+#### Request body  
+A JSON object containing the selected tools to synchronize.
+
+---
+
+#### Request example  
+```json
+{
+  "selected_tools": [
+    "string"
+  ]
+}
+```
+
+---
+
+#### Returns  
+The result of the tool synchronization operation.
+
+---
+
+#### Status Code
+
+`200 OK`: Tools synchronized successfully.
+
+`400 Bad Request`: Bad request.
+
+`404 Not Found`: MCP Server not found.
+
+`500 Internal Server Error`: Internal server error.
+
+---
+
+#### Response example  
+```json
+{
+  "success": true,
+  "message": "string",
+  "result_data": {},
+  "tools": [
+    {}
+  ],
+  "server_info": {}
+}
+```
+
+---
+
+### Delete tools from an MCP server
+
+**DELETE** `/mcp-servers/{server_id}/tools/`  
+Removes all currently configured tools from the specified MCP server, effectively disabling all tool functionality for that server.
+
+---
+
+#### Path parameters  
+`server_id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the MCP server from which tools will be deleted.
+
+---
+
+#### Status Code  
+`200 OK`: All tools removed successfully.
+
+`404 Not Found`: MCP Server not found.
+
+`500 Internal Server Error`: Internal server error.
+
+---
+
+#### Response example  
+```json
+{
+  "success": true,
+  "message": "string",
+  "result_data": {}
+}
+```
+
+---
+
+## MCP Tools
+
+### List all MCP tools
+
+**GET** `/mcp-tools/`  
+Retrieves a comprehensive list of all configured MCP tools in the system, including their parameters, server associations, and availability settings.
+
+---
+
+#### Query parameters *(optional)*
+`page` *(integer)*:  
+  The page number within the paginated result set. Use this parameter to navigate through large result sets. Default is usually 1.
+
+`page_size` *(integer)*:  
+  The number of results to return per page. This allows control over the size of each result set and helps manage performance and load. Typical default is 10 or 20.
+
+---
+
+#### Returns  
+A list of MCP tool objects, each representing a configured tool with associated parameters and configuration.
+
+---
+
+#### Status Code
+
+`200 OK`: List returned successfully.
+
+`502 Bad Gateway`: Error retrieving MCP tools data.
+
+#### Response example  
+```json
+[
+  {
+    "id": 0,
+    "name": "string",
+    "description": "string",
+    "created_at": "2025-05-28T12:34:00.601Z",
+    "updated_at": "2025-05-28T12:34:00.601Z",
+    "show_tool_message": true,
+    "show_assistant_message": true,
+    "edit_available": true,
+    "portal_available": true,
+    "server": {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "url": "string",
+      "headers": {},
+      "protocol_version": "string",
+      "client_name": "string",
+      "client_version": "string",
+      "active": true,
+      "created_at": "2025-05-28T12:34:00.601Z",
+      "updated_at": "2025-05-28T12:34:00.601Z"
+    },
+    "parameters": [
+      {
+        "id": 0,
+        "name": "string",
+        "description": "string",
+        "type": "string",
+        "items": null,
+        "required": true
+      }
+    ]
+  }
+]
+```
+
+---
+
+### Create a new MCP tool
+
+**POST** `/mcp-tools/`  
+Creates a new MCP tool configuration with display settings, portal availability, server association, and selected tool functionality.
+
+---
+
+#### Request body  
+The body must be a JSON object containing the MCP tool configuration fields.
+
+---
+
+#### Request example  
+```json
+{
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "portal_available": true,
+  "server": {
+    "name": "string",
+    "description": "string",
+    "url": "string",
+    "headers": {},
+    "protocol_version": "string",
+    "client_name": "string",
+    "client_version": "string",
+    "active": true
+  },
+  "server_id": 0,
+  "selected_tools": [
+    "string"
+  ]
+}
+```
+
+---
+
+#### Returns  
+The created MCP tool object.
+
+---
+
+#### Status Code
+
+`201 Created`: MCP tool created successfully.
+
+`400 Bad Request`: Input validation failed.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "portal_available": true,
+  "server": {
+    "id": 0,
+    "name": "string",
+    "description": "string",
+    "url": "string",
+    "headers": {},
+    "protocol_version": "string",
+    "client_name": "string",
+    "client_version": "string",
+    "active": true,
+    "created_at": "2025-05-28T12:34:00.601Z",
+    "updated_at": "2025-05-28T12:34:00.601Z"
+  },
+  "server_id": 0,
+  "parameters": "string",
+  "selected_tools": [
+    "string"
+  ]
+}
+```
+
+---
+
+### Get a specific MCP tool
+
+**GET** `/mcp-tools/{id}/`  
+Retrieves detailed configuration of a specific MCP tool including its parameters, server information, and display settings.
+
+---
+
+#### Path parameters
+
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique ID of the MCP tool to retrieve.
+
+---
+
+#### Returns  
+An MCP tool object containing all configuration details.
+
+---
+
+#### Status Code
+
+`200 OK`: MCP tool retrieved successfully.
+
+`404 Not Found`: MCP tool with given ID does not exist.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "portal_available": true,
+  "server": {
+    "id": 0,
+    "name": "string",
+    "description": "string",
+    "url": "string",
+    "headers": {},
+    "protocol_version": "string",
+    "client_name": "string",
+    "client_version": "string",
+    "active": true,
+    "created_at": "2025-05-28T12:34:00.601Z",
+    "updated_at": "2025-05-28T12:34:00.601Z"
+  },
+  "parameters": [
+    {
+      "id": 0,
+      "name": "string",
+      "description": "string",
+      "type": "string",
+      "items": null,
+      "required": true
+    }
+  ]
+}
+```
+
+---
+
+### Update an MCP tool
+
+**PUT** `/mcp-tools/{id}/`  
+Updates all configuration aspects of an MCP tool including display settings, portal availability, server association, and selected tools.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the MCP tool to update.
+
+---
+
+#### Request body  
+A JSON object with the MCP tool configuration.
+
+---
+
+#### Request example  
+```json
+{
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "portal_available": true,
+  "server": {
+    "name": "string",
+    "description": "string",
+    "url": "string",
+    "headers": {},
+    "protocol_version": "string",
+    "client_name": "string",
+    "client_version": "string",
+    "active": true
+  },
+  "server_id": 0,
+  "selected_tools": [
+    "string"
+  ]
+}
+```
+
+---
+
+#### Returns  
+The updated MCP tool object.
+
+---
+
+#### Status Code
+
+`200 OK`: MCP tool updated successfully.
+
+`400 Bad Request`: Input validation failed.
+
+`404 Not Found`: MCP tool not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "portal_available": true,
+  "server": {
+    "id": 0,
+    "name": "string",
+    "description": "string",
+    "url": "string",
+    "headers": {},
+    "protocol_version": "string",
+    "client_name": "string",
+    "client_version": "string",
+    "active": true,
+    "created_at": "2025-05-28T12:34:00.601Z",
+    "updated_at": "2025-05-28T12:34:00.601Z"
+  },
+  "server_id": 0,
+  "parameters": "string",
+  "selected_tools": [
+    "string"
+  ]
+}
+```
+
+---
+
+### Partially update an MCP tool
+
+**PATCH** `/mcp-tools/{id}/`  
+Modifies specific fields of an MCP tool configuration such as display settings, availability options, or server associations without affecting other properties.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the MCP tool to update.
+
+---
+
+#### Request body  
+A JSON object containing the MCP tool configuration fields to update. Only the fields provided will be updated.
+
+---
+
+#### Request example  
+```json
+{
+  "name": "string",
+  "description": "string",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "portal_available": true,
+  "server": {
+    "name": "string",
+    "description": "string",
+    "url": "string",
+    "headers": {},
+    "protocol_version": "string",
+    "client_name": "string",
+    "client_version": "string",
+    "active": true
+  },
+  "server_id": 0,
+  "selected_tools": [
+    "string"
+  ]
+}
+```
+
+---
+
+#### Returns  
+The updated MCP tool object with all current values.
+
+---
+
+#### Status Code
+
+`200 OK`: Partial update was successful.
+
+`400 Bad Request`: Input validation failed.
+
+`404 Not Found`: MCP tool not found.
+
+---
+
+#### Response example  
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "portal_available": true,
+  "server": {
+    "id": 0,
+    "name": "string",
+    "description": "string",
+    "url": "string",
+    "headers": {},
+    "protocol_version": "string",
+    "client_name": "string",
+    "client_version": "string",
+    "active": true,
+    "created_at": "2025-05-28T12:34:00.601Z",
+    "updated_at": "2025-05-28T12:34:00.601Z"
+  },
+  "server_id": 0,
+  "parameters": "string",
+  "selected_tools": [
+    "string"
+  ]
+}
+```
+
+---
+
+### Delete an MCP tool
+
+**DELETE** `/mcp-tools/{id}/`  
+Permanently removes an MCP tool configuration from the system, including all its display settings and server associations.
+
+---
+
+#### Path parameters  
+`id` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>
+  :  
+  The unique identifier of the MCP tool to delete.
+
+---
+
+#### Status Code  
+`204 No Content`: MCP tool was successfully deleted.
+
+`404 Not Found`: MCP tool not found.

@@ -1,0 +1,71 @@
+---
+sidebar_position: 10
+---
+
+### Message Model
+
+Represents an individual message exchanged during a conversation, including metadata and role-based context.
+
+---
+
+#### `id` *(integer, Read-only)*  
+Unique identifier for the message.  
+
+---
+#### `role` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+Defines who sent the message.  
+- **Values**: `user`, `assistant`, `system`  
+
+---
+#### `content` *(string)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+The textual content of the message.  
+- **Minimum length**: 1 character  
+
+---
+#### `msg_num` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+Sequential number of the message in the conversation.  
+- **Range**: -2147483648 to 2147483647  
+
+---
+#### `usr_msg_num` *(string, Read-only)*  
+Reference to the original user message number for tracking purposes.  
+
+---
+#### `fixed` *(string, Read-only)*  
+A fixed value reference, used for tracking if the message was matched with a fixed response.  
+
+---
+#### `metadata` *(object, Nullable)*  
+Additional metadata associated with the message.  
+
+---
+#### `references` *(string, Read-only)*  
+References included in the message, such as citations or links.  
+
+---
+#### `created_at` *(string, Read-only, date-time)*  
+Timestamp when the message was created.  
+- Format: ISO 8601  
+
+---
+#### `updated_at` *(string, Read-only, date-time)*  
+Timestamp when the message was last updated.  
+- Format: ISO 8601  
+
+---
+
+#### Example
+```json
+{
+  "id": 0,
+  "role": "assistant",
+  "content": "string",
+  "msg_num": 2147483647,
+  "usr_msg_num": "string",
+  "fixed": "string",
+  "metadata": {},
+  "references": "string",
+  "created_at": "2025-05-29T12:51:42.143Z",
+  "updated_at": "2025-05-29T12:51:42.143Z"
+}
+```

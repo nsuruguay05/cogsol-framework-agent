@@ -1,0 +1,48 @@
+---
+sidebar_position: 26
+---
+
+### MCPServerConnection Model
+
+Represents the connection status and available tools information when testing a connection to an MCP server.
+
+---
+
+#### `server_name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Name of the MCP server. Maximum 255 characters, minimum 1 character.
+
+---
+
+#### `connection_successful` *(boolean)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Whether the connection test was successful.
+
+---
+
+#### `available_tools_count` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Number of tools available on the server.
+
+---
+
+#### `available_tools` *(array[string])* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+List of available tool names. Each tool name must have minimum 1 character.
+
+---
+
+#### `errors` *(array[string])* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+List of error messages if any occurred during connection. Each error message must have minimum 1 character.
+
+---
+
+#### Example
+
+```json
+{
+  "server_name": "string",
+  "connection_successful": true,
+  "available_tools_count": 0,
+  "available_tools": [
+    "string"
+  ],
+  "errors": []
+}
+```

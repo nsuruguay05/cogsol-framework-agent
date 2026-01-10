@@ -1,0 +1,38 @@
+---
+sidebar_position: 14
+---
+
+### RetrievalReferenceFormatter Model
+
+Defines the structure for linking document types with reference formatters in retrieval configurations, specifying how citations should be formatted for different document types.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the retrieval reference formatter. Automatically assigned by the system.  
+**Title:** ID
+
+---
+
+#### `doc_type` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Type of document for which this formatter applies.  
+**Title:** Doc type  
+**Enum values:** `Video`, `Latex Slideshow`, `PDF Slideshow`, `Latex Document`, `Text Document`, `Webpage`, `Transcription`
+
+---
+
+#### `formatter_id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Reference to the formatter that should be used for this document type.  
+**Title:** Formatter id
+
+---
+
+#### Example
+```json
+[
+  {
+    "doc_type": "Video",
+    "formatter_id": 0
+  }
+]
+```

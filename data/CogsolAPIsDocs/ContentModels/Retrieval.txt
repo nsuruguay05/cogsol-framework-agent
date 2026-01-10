@@ -1,0 +1,162 @@
+---
+sidebar_position: 15
+---
+
+### Retrieval Model
+
+Defines the structure and configuration of a retrieval system, including reference formatters, reordering strategies, and various retrieval parameters for document search and citation.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the retrieval configuration. Automatically assigned by the system.  
+**Title:** Id
+
+---
+
+#### `formatters` *(array)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Array of RetrievalReferenceFormatter objects that define how different document types should be formatted in citations.  
+**Item type:** RetrievalReferenceFormatter object with:
+- `id` *(integer)*: Formatter identifier
+- `doc_type` *(string)*: Document type
+- `formatter_id` *(integer)*: Reference to formatter configuration
+
+---
+
+#### `description` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Description of the retrieval configuration.  
+**Title:** Description  
+**Minimum length:** 1 character
+
+---
+
+#### `num_refs` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Number of references to retrieve.  
+**Title:** Num refs  
+**Maximum:** 10  
+**Minimum:** 1
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the retrieval configuration was created. Automatically set by the system.  
+**Title:** Created at
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp of the last retrieval configuration update. Automatically updated by the system.  
+**Title:** Updated at
+
+---
+
+#### `reordering` *(boolean, Optional)*  
+Indicates if reordering is enabled for the retrieval results.  
+**Title:** Reordering
+
+---
+
+#### `strategy_reordering` *(string, Optional)*  
+Strategy for reordering retrieval results.  
+**Title:** Strategy reordering  
+**Minimum length:** 1 character
+
+---
+
+#### `retrieval_window` *(integer, Optional)*  
+Window size for retrieval operations.  
+**Title:** Retrieval window  
+**Maximum:** 2147483647  
+**Minimum:** -2147483648
+
+---
+
+#### `reordering_metadata` *(string, Optional)*  
+Metadata configuration for reordering operations.  
+**Title:** Reordering metadata  
+**Minimum length:** 1 character
+
+---
+
+#### `fixed_blocks_reordering` *(integer, Optional)*  
+Number of fixed blocks for reordering.  
+**Title:** Fixed blocks reordering  
+**Maximum:** 2147483647  
+**Minimum:** -2147483648
+
+---
+
+#### `previous_blocks` *(number, Optional)*  
+Number of previous blocks to consider.  
+**Title:** Previous blocks
+
+---
+
+#### `next_blocks` *(number, Optional)*  
+Number of next blocks to consider.  
+**Title:** Next blocks
+
+---
+
+#### `contingency_for_embedding` *(boolean, Optional)*  
+Indicates if contingency for embedding is enabled.  
+**Title:** Contingency for embedding
+
+---
+
+#### `threshold_similarity` *(number, Optional)*  
+Threshold similarity value for retrieval matching.  
+**Title:** Threshold similarity  
+**Maximum:** 1  
+**Minimum:** 0  
+**x-nullable:** true
+
+---
+
+#### `max_msg_length` *(integer, Optional)*  
+Maximum message length for retrieval operations.  
+**Title:** Max msg length  
+**Maximum:** 570  
+**Minimum:** 1
+
+---
+
+#### `retrieval_type` *(string, Optional)*  
+Type of retrieval operation.  
+**Title:** Retrieval type  
+**Enum values:** `SEARCH`, `LESSONS`, `FAQ`, `FIXED`
+
+---
+
+#### `node` *(integer, Nullable)*  
+Reference to the node associated with this retrieval configuration.  
+**Title:** Node  
+**x-nullable:** true
+
+---
+
+#### Example
+```json
+{
+  "formatters": [
+    {
+      "doc_type": "Video",
+      "formatter_id": 0
+    }
+  ],
+  "description": "string",
+  "num_refs": 10,
+  "reordering": true,
+  "strategy_reordering": "string",
+  "retrieval_window": 2147483647,
+  "reordering_metadata": "string",
+  "fixed_blocks_reordering": 2147483647,
+  "previous_blocks": 0,
+  "next_blocks": 0,
+  "contingency_for_embedding": true,
+  "threshold_similarity": 1,
+  "max_msg_length": 570,
+  "retrieval_type": "SEARCH",
+  "node": 0
+}
+```

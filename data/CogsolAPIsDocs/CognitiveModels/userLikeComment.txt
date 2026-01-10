@@ -1,0 +1,36 @@
+---
+sidebar_position: 23
+---
+
+### UserLikeComment Model
+
+Captures user feedback on a specific chat or interaction, including a like status, optional comment, and matrix mode flag.
+
+---
+
+#### `like` *(boolean)*  
+Indicates whether the user liked the assistant's response.  
+- **true**: The user liked it  
+- **false**: The user did not like it  
+
+---
+
+#### `comment` *(string, Nullable)*  
+A comment provided by the user about the assistant’s response.  
+- **Minimum length**: 1 character   
+
+---
+
+#### `matrix_mode` *(boolean)*  
+Flag indicating if the feedback was given while using matrix mode.  
+
+---
+
+#### Example
+```json
+{
+  "like": true,
+  "comment": "string",
+  "matrix_mode": true
+}
+```

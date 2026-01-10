@@ -1,0 +1,61 @@
+---
+sidebar_position: 17
+---
+
+### ReportMetrics Model
+
+Represents aggregated metrics related to user reports.
+
+---
+
+#### `total_reports` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+Total number of reports recorded.  
+
+---
+#### `status_counts` *(object)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Breakdown of report counts by status.  
+- Format: Key-value pairs where the key is the status (string) and the value is the count (integer)  
+
+---
+#### `category_counts` *(object)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Breakdown of report counts by category.  
+- Format: Key-value pairs where the key is the category (string) and the value is the count (integer)  
+
+---
+#### `reason_counts` *(object)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Breakdown of report counts by reason.  
+- Format: Key-value pairs where the key is the reason (string) and the value is the count (integer)  
+
+---
+#### `severity_counts` *(object)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Breakdown of report counts by severity level.  
+- Format: Key-value pairs where the key is the severity (string) and the value is the count (integer)  
+
+---
+
+#### Example
+```json
+{
+  "total_reports": 0,
+  "status_counts": {
+    "additionalProp1": 0,
+    "additionalProp2": 0,
+    "additionalProp3": 0
+  },
+  "category_counts": {
+    "additionalProp1": 0,
+    "additionalProp2": 0,
+    "additionalProp3": 0
+  },
+  "reason_counts": {
+    "additionalProp1": 0,
+    "additionalProp2": 0,
+    "additionalProp3": 0
+  },
+  "severity_counts": {
+    "additionalProp1": 0,
+    "additionalProp2": 0,
+    "additionalProp3": 0
+  }
+}
+```

@@ -1,0 +1,37 @@
+---
+sidebar_position: 13
+---
+
+### OptionalUserMessage Model
+
+Defines the structure of an optional user message, including its text, associated file (if any), and metadata.
+
+---
+
+#### `message` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span> 
+The main text content of the user's message.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `file` *(string, URI, ReadOnly)*  
+A URI link to a file associated with the user message.  
+
+---
+
+#### `metadata` *(object, Optional)*  
+A dictionary of key-value pairs containing additional context or attributes associated with the message.  
+
+---
+
+#### Example
+```json
+{
+  "message": "string",
+  "metadata": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
+```

@@ -1,0 +1,40 @@
+---
+sidebar_position: 4
+---
+
+### MetadataItem Model
+
+Defines the structure of a metadata item, representing key-value pairs with optional configuration references for document and block metadata.
+
+---
+
+#### `key` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+The metadata key identifier. Minimum length: 1 character.
+
+---
+
+#### `values` *(array)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Array of string values associated with the metadata key.  
+**Minimum items:** 1  
+**Item type:** string  
+**Item constraint:** Minimum length: 1 character per value
+
+---
+
+#### `metadata_config` *(integer, Nullable)*  
+Reference to the metadata configuration that defines the structure and validation rules for this metadata item. Can be null if no specific configuration is applied.
+
+---
+
+#### Example
+```json
+[
+    {
+      "key": "string",
+      "values": [
+        "string"
+      ],
+      "metadata_config": 0
+    }
+]
+```

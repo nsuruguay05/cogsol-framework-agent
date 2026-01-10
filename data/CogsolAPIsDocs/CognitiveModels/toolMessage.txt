@@ -1,0 +1,37 @@
+---
+sidebar_position: 21
+---
+
+### ToolMessage Model
+
+Represents a message used to invoke a tool function, including the function name and parameters passed during execution.
+
+---
+
+#### `function_name` *(string)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+The name of the function to be called by the tool.  
+- **Minimum length**: 1 character  
+
+---
+#### `parameters` *(object, Nullable)*  
+A dictionary of parameters required by the function.  
+
+---
+#### `tool_call_id` *(string)*  
+An identifier used to track and correlate tool calls.  
+- **Minimum length**: 1 character  
+
+---
+
+#### Example
+```json
+{
+  "function_name": "string",
+  "parameters": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  },
+  "tool_call_id": "string"
+}
+```

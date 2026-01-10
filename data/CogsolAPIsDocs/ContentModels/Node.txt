@@ -1,0 +1,91 @@
+---
+sidebar_position: 10
+---
+
+### Node Model
+
+Defines the detailed structure of a node with embedded document relationships, representing an organizational unit in the document hierarchy with full nested information.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier of the node. Automatically assigned by the system.
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Name of the node. Minimum length: 1 character.
+
+---
+
+#### `parent` *(integer, Nullable)*  
+Reference to the parent node identifier for hierarchical organization. Can be null for root nodes.
+
+---
+
+#### `documents` *(array)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Array of Document objects associated with this node. Each Document includes:
+- `id` *(integer)*: Document identifier
+- `metadata` *(object)*: Document metadata
+- `node_id` *(array)*: Array of associated node IDs
+- `name` *(string)*: Document name
+- `doc_type` *(string)*: Document type
+- `processing_status` *(string)*: Processing status
+- `processing_error_details` *(string, nullable)*: Error details if processing failed
+- `created_at` *(string, date-time)*: Creation timestamp
+- `updated_at` *(string, date-time)*: Last update timestamp
+- `initial_block_text` *(string)*: Initial block text content
+- `node` *(integer)*: Primary node reference
+
+---
+
+#### `initial_block_text` *(string, Optional)*  
+Initial text content or description associated with the node.
+
+---
+
+#### `node_type` *(string, Optional)*  
+Type classification of the node.  
+**Enum values:** `COMMON`, `LESSONS`, `FAQ`, `FIXED`
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the node was created. Automatically set by the system.
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp of the last node update. Automatically updated by the system.
+
+---
+
+#### Example
+```json
+{
+  "id": 0,
+  "name": "string",
+  "parent": 0,
+  "documents": [
+    {
+      "id": 0,
+      "metadata": "string",
+      "node_id": [
+        "string"
+      ],
+      "name": "string",
+      "doc_type": "Video",
+      "processing_status": "CREATED",
+      "processing_error_details": "string",
+      "created_at": "2025-07-02T12:51:04.893Z",
+      "updated_at": "2025-07-02T12:51:04.893Z",
+      "initial_block_text": "string",
+      "node": 0
+    }
+  ],
+  "initial_block_text": "string",
+  "node_type": "COMMON",
+  "created_at": "2025-07-02T12:51:04.893Z",
+  "updated_at": "2025-07-02T12:51:04.893Z"
+}
+```

@@ -1,0 +1,108 @@
+---
+sidebar_position: 28
+---
+
+### MCPTool Model
+
+Represents a configured MCP tool with its parameters, server association, and display settings.
+
+---
+
+#### `id` *(integer, ReadOnly)*  
+Unique identifier for the MCP tool. Automatically assigned by the system.
+
+---
+
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Name of the tool. Minimum 1 character.
+
+---
+
+#### `description` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Description of the tool. Minimum 1 character.
+
+---
+
+#### `created_at` *(string, date-time, ReadOnly)*  
+Timestamp when the tool was created. Automatically set by the system.
+
+---
+
+#### `updated_at` *(string, date-time, ReadOnly)*  
+Timestamp when the tool was last updated. Automatically maintained by the system.
+
+---
+
+#### `show_tool_message` *(boolean, Optional)*  
+Whether to show tool messages in the interface.
+
+---
+
+#### `show_assistant_message` *(boolean, Optional)*  
+Whether to show assistant messages.
+
+---
+
+#### `edit_available` *(boolean, Optional)*  
+Whether this tool can be edited by users.
+
+---
+
+#### `portal_available` *(boolean, Optional)*  
+Whether this tool will be shown in the portal.
+
+---
+
+#### `server` *(object, Optional)*  
+Associated MCP server configuration. References [MCPServer](./mcpServer.md) model.
+
+---
+
+#### `server_id` *(integer, Optional)*  
+ID of the associated server.
+
+---
+
+#### `parameters` *(string, ReadOnly)*  
+Tool parameters configuration. Automatically managed by the system.
+
+---
+
+#### `selected_tools` *(array[string], Optional)*  
+List of tool names to create or synchronize. Each tool name must have minimum 1 character.
+
+---
+
+#### Example
+
+```json
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "created_at": "2025-05-28T12:34:00.601Z",
+  "updated_at": "2025-05-28T12:34:00.601Z",
+  "show_tool_message": true,
+  "show_assistant_message": true,
+  "edit_available": true,
+  "portal_available": true,
+  "server": {
+    "id": 0,
+    "name": "string",
+    "description": "string",
+    "url": "string",
+    "headers": {},
+    "protocol_version": "string",
+    "client_name": "string",
+    "client_version": "string",
+    "active": true,
+    "created_at": "2025-05-28T12:34:00.601Z",
+    "updated_at": "2025-05-28T12:34:00.601Z"
+  },
+  "server_id": 0,
+  "parameters": "string",
+  "selected_tools": [
+    "string"
+  ]
+}
+```

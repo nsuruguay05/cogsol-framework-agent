@@ -1,0 +1,21 @@
+---
+sidebar_position: 12
+---
+
+### MessageAttachment Model
+
+Represents a file attachment associated with a message, including the original filename and file content metadata.
+
+---
+
+#### `original_file_name` *(string, Nullable)*  
+The original name of the uploaded file.  
+- **Minimum length**: 1 character  
+- **Maximum length**: 255 characters  
+
+---
+#### `file_content` *(string, Read-only)*  
+The encoded or referenced content of the file.  
+
+---
+

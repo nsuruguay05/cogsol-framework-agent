@@ -1,0 +1,31 @@
+---
+sidebar_position: 12
+---
+
+### MoveNodeDocuments Model
+
+Defines the structure for moving documents from one node to another, specifying the destination node and the documents to be transferred.
+
+---
+
+#### `destination_node` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Identifier of the destination node where the documents will be moved.  
+**Title:** Destination node
+
+---
+
+#### `documents` *(array)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Array of document identifiers to be moved to the destination node.  
+**Item type:** integer
+
+---
+
+#### Example
+```json
+{
+  "destination_node": 0,
+  "documents": [
+    0
+  ]
+}
+```

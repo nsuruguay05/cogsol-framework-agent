@@ -1,0 +1,13 @@
+---
+sidebar_position: 22
+---
+
+### UserLike Model Parameters
+
+Represents a user's like action on a message or entity.
+
+---
+
+#### `like` *(boolean)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Indicates whether the user liked the item.  
+

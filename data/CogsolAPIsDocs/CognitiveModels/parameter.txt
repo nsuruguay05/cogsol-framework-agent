@@ -1,0 +1,42 @@
+---
+sidebar_position: 14
+---
+
+### Parameter Model
+
+Defines a parameter used in tools, including metadata about its identity, purpose, and constraints.
+
+---
+
+#### `id` *(integer, Read-only)*  
+Unique identifier of the parameter.  
+
+---
+#### `name` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+The name of the parameter.  
+- **Min length**: 1  
+
+---
+#### `description` *(string)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+A description explaining the purpose or expected content of the parameter.  
+- **Min length**: 1  
+
+---
+#### `type` *(string)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+The data type of the parameter.  
+- **Min length**: 1  
+
+---
+#### `required` *(boolean)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Indicates whether this parameter must be provided for the tool to function.  
+
+---
+
+#### Example
+```json
+{
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+}
+```

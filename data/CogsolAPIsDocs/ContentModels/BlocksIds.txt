@@ -1,0 +1,26 @@
+---
+sidebar_position: 3
+---
+
+### BlocksIds Model
+
+Defines the structure for specifying a collection of block identifiers, used for operations that target multiple blocks simultaneously.
+
+---
+
+#### `blocks_ids` *(array)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Array of block identifiers to be processed or manipulated.  
+**Minimum items:** 1  
+**Item type:** integer  
+**Item range:** Minimum value: 1
+
+---
+
+#### Example
+```json
+{
+  "blocks_ids": [
+    1
+  ]
+}
+```

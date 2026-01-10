@@ -1,0 +1,92 @@
+---
+sidebar_position: 8
+---
+
+### FullMessage Model
+
+Represents a complete message object that may include metadata, attachments, and tool-related execution information.
+
+---
+
+#### `id` *(integer, Read-only)*  
+Unique identifier of the message.  
+
+---
+#### `attachments` *(array of [MessageAttachment](./messageAttachment.md))*  
+A list of attached files related to this message. 
+
+---
+#### `role` *(string)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+The role of the message sender.  
+- **Enum values**:`"user"`, `"assistant"`, `"tool"`
+
+---
+#### `content` *(string)*  <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>  
+Textual content of the message.  
+- **Minimum length**: 1 character  
+
+---
+#### `tool_call_id` *(string, Nullable)*  
+The ID of the tool call if the message is part of a tool execution sequence.  
+
+---
+#### `function_name` *(string, Nullable)*  
+The name of the function invoked via a tool call.  
+
+---
+#### `msg_num` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+Message number in the conversation sequence.  
+
+---
+#### `likes` *(boolean, Nullable)*  
+Indicates whether the message was liked.  
+
+---
+#### `created_at` *(string, Read-only, date-time)*  
+Timestamp indicating when the message was created.  
+
+---
+#### `updated_at` *(string, Read-only, date-time)*  
+Timestamp of the last update to the message.  
+
+---
+#### `visible` *(boolean)*  
+Whether the message is visible in the conversation thread.  
+
+---
+#### `metadata` *(Metadata, Nullable)*  
+Key-value map of additional message metadata.  
+
+---
+#### `system_prompt` *(string, Nullable)*  
+The system-level prompt associated with this message.  
+
+---
+#### `functions` *(Functions, Nullable)*  
+Optional map of callable tool functions relevant to this message.  
+
+---
+#### Example
+```json
+{
+  "id": 0,
+  "attachments": [
+    {
+      "original_file_name": "string",
+      "file_content": "string"
+    }
+  ],
+  "role": "assistant",
+  "content": "string",
+  "tool_call_id": "string",
+  "function_name": "string",
+  "msg_num": 2147483647,
+  "likes": true,
+  "created_at": "2025-05-29T12:48:30.937Z",
+  "updated_at": "2025-05-29T12:48:30.937Z",
+  "visible": true,
+  "metadata": {},
+  "system_prompt": "string",
+  "functions": {}
+}
+```

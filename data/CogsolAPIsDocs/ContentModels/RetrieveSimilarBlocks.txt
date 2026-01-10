@@ -1,0 +1,31 @@
+---
+sidebar_position: 16
+---
+
+### RetrieveSimilarBlocks Model
+
+Defines the structure for retrieving similar blocks based on a question query, with optional document type filtering for targeted search operations.
+
+---
+
+#### `question` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+Question or query text used to find similar content blocks.  
+**Title:** Question  
+**Minimum length:** 1 character
+
+---
+
+#### `doc_type` *(string, Optional)*  
+Type of document to filter the search results.  
+**Title:** Doc type  
+**Enum values:** `Video`, `Latex Slideshow`, `PDF Slideshow`, `Latex Document`, `Text Document`, `Webpage`, `Transcription`
+
+---
+
+#### Example
+```json
+{
+  "question": "string",
+  "doc_type": "Video"
+}
+```

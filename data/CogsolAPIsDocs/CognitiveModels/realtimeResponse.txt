@@ -1,0 +1,103 @@
+---
+sidebar_position: 16
+---
+
+### RealtimeResponse Model
+
+Represents the payload returned when initializing a real-time chat session with an assistant. It contains both assistant configuration details and chat-related metadata used for model execution.
+
+---
+
+#### `assistant` *(object)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span> 
+Configuration object representing the assistant participating in the real-time chat. This includes behavioral settings, retrieval strategies, UI elements, and token optimization policies.
+
+- **See full documentation**: [Assistant Model](./assistant.md)
+
+---
+
+#### `chat_id` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+The unique identifier for the chat session that has just been created.  
+Used to reference or resume the session.
+
+---
+
+#### `model` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+The identifier for the model used in the response generation.  
+- **Minimum length**: 1 character  
+
+---
+
+#### `system_prompt` *(string)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>    
+A prompt used to instruct the assistant system-level behavior during this real-time session.  
+Should include contextual or behavioral instructions for the assistant.
+- **Minimum length**: 1 character  
+Should include contextual or behavioral instructions for the assistant.
+
+---
+
+#### `temperature` *(number)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+Controls the randomness of the model's output.  
+- **Range**: `0` to `2`  
+- Higher values increase creativity and variability in responses.
+
+---
+
+#### `max_tokens` *(integer)* <span style={{ color: 'red', fontWeight: 'bold' }}>Required</span>   
+Defines the upper limit for the number of tokens that can be generated in a single response.  
+
+---
+
+#### `additional_params` *(object, Optional)*  
+A dictionary of extra parameters passed to the model for custom behavior.  
+- **Keys**: Must be strings  
+- **Values**: Nullable strings  
+
+---
+
+#### Example
+```json
+{
+  "assistant": {
+    "id": 0,
+    "generation_config": "string",
+    "generation_config_pretools": "string",
+    "description": "string",
+    "system_prompt": "string",
+    "temperature": 2,
+    "max_responses": 2147483647,
+    "max_msg_length": 2147483647,
+    "initial_message": "string",
+    "end_message": "string",
+    "add_to_user_message": "string",
+    "max_consecutive_tool_calls": 2147483647,
+    "created_at": "2025-05-29T13:29:50.467Z",
+    "updated_at": "2025-05-29T13:29:50.467Z",
+    "retrieval_faq": 0,
+    "retrieval_fixed_faq": 0,
+    "retrieval_lessons": 0,
+    "matrix_mode_available": true,
+    "not_info_message": "string",
+    "strategy_to_optimize_tokens": "string",
+    "faq_available": true,
+    "fixed_available": true,
+    "lessons_available": true,
+    "realtime_available": true,
+    "info": "string",
+    "colors": {},
+    "logo": "string",
+    "streaming_available": true,
+    "tools": [
+      0
+    ],
+    "pretools": [
+      0
+    ]
+  },
+  "chat_id": 0,
+  "model": "string",
+  "system_prompt": "string",
+  "temperature": 0,
+  "max_tokens": 0,
+  "additional_params": {}
+}
+```
